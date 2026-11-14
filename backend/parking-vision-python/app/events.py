@@ -121,3 +121,12 @@ class EventRegistry:
             if existing is None or existing != event:
                 raise ValueError('Unknown or conflicting event_id')
             return existing
+
+    def history(self, offset: int = 0, limit: int = 50) -> tuple[int, list[VisionEvent]]:
+        with self._lock:
+            events = list(self._events.values())
+            return len(events), events[offset:offset + limit]
+
+    def get(self, event_id: UUID) -> VisionEvent | None:
+        with self._lock:
+            return self._events.get(event_id)
