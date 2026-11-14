@@ -1,0 +1,8 @@
+{
+  "sectors": ["A", "B"],
+  "cameras": [
+    {"camera_id": "CAM_ENTRADA", "event_type": "ENTRY"},
+    {"camera_id": "CAM_A_B", "event_type": "PASSAGE", "origin_sector": "A", "destination_sector": "B"},
+    {"camera_id": "CAM_SAIDA", "event_type": "EXIT"}
+  ]
+}
