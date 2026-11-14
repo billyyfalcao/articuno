@@ -1,0 +1,14 @@
+.tools/
+.cache/
+target/
+data/
+.env
+.env.*
+!.env.example
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.log
+.idea/
+*.iml
