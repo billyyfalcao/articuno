@@ -13,6 +13,7 @@ class Settings(BaseSettings):
         hide_input_in_errors=True,
     )
     cors_origins: list[str] = ['http://localhost:5173', 'http://127.0.0.1:5173']
+    video_root: Path = Path(__file__).resolve().parents[1] / 'videos'
 
     @field_validator('cors_origins')
     @classmethod
