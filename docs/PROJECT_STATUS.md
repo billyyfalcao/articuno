@@ -1,283 +1,225 @@
-# Articuno — estado do projeto e retomada da sessão
+# Articuno — estado do projeto e retomada
 
-Snapshot conferido no GitHub em **14/11/2026**, a partir das **03:02 (UTC−03,
-America/Sao_Paulo)**. Prazo informado pela equipe: **14/11/2026 às 12h**.
-Este documento registra evidências disponíveis, não substitui uma nova consulta
-ao remoto antes de continuar o desenvolvimento.
+Conferido no GitHub em **14/11/2026**, durante a entrega do JV-02. Prazo da equipe:
+**14/11/2026 às 12h**. Consultar novamente o remoto antes de continuar.
 
 - Repositório: [billyyfalcao/articuno](https://github.com/billyyfalcao/articuno).
 - Project: [billyyfalcao #6](https://github.com/users/billyyfalcao/projects/6).
-- Base conferida: `origin/develop` em `6e3deac01f96de1fbb6f420e4851142f7e484151`.
-- **Novidade desta conferência:** o PR #17 do PY-08 foi integrado pela equipe
-  em `2026-11-14T05:58:57Z` (02:58:57 em São Paulo). A Issue #8 continua aberta:
-  os critérios dependentes de OCR real, Java e React continuam pendentes.
-- Branch desta documentação: `docs/PY-08-project-status`, criada da base acima,
-  para commit **somente local**, sem push ou PR. Nenhuma mudança funcional.
+- Base: `origin/develop` em `885b354363a50ee710a5ce5aa97aeb1ce5dd911b`.
+- **JV-01 já integrado:** [PR #26](https://github.com/billyyfalcao/articuno/pull/26),
+  merge em 14/11 às 04:16:05 de Brasília. Não repetir a estrutura Java.
+- Branch atual: `feat/JV-02-eventos-idempotencia`, baseada nesse develop.
+  Receptor JV-02 implementado, testado e publicado no
+  [PR #27](https://github.com/billyyfalcao/articuno/pull/27), OPEN para develop.
+  Card em In review; aguarda revisão/merge pela equipe, sem auto-merge.
+- O resumo anterior, publicado pelo [PR #18](https://github.com/billyyfalcao/articuno/pull/18),
+  dizia que Java estava ausente e que este documento era apenas local. Essas
+  informações estão desatualizadas e foram corrigidas aqui.
 
 ## 1. Arquitetura e interfaces
 
-Fluxo pretendido: vídeo/câmera lógica → Python/FastAPI → REST interno
-Java/Spring Boot → banco principal. Um único React compartilhado consulta o
-estado da visão no Python e os dados administrativos no Java.
+Vídeo/câmera lógica → Python/FastAPI → REST interno Java/Spring Boot → SQLite.
+Um único React compartilhado deverá consumir os dois backends.
 
-| Componente | Responsabilidade | Evidência atual |
+| Componente | Responsabilidade e estado |
+|---|---|
+| Python | MP4, frames, câmeras lógicas, eventos, simulador assistido e cliente HTTP integrados; OCR continua separado no PR #13 |
+| Java | Fonte de verdade futura das sessões, setores, ocupação estimada, tickets e pagamentos; estrutura/SQLite/health integrados; receptor persistente JV-02 validado nesta branch |
+| React | Painel administrativo, portal do motorista e totem; fontes completas ainda não publicadas |
+
+Interfaces acordadas: **/admin**, portal do motorista e **/totem/entrada**.
+O planejamento usa /motorista/:token, mas o bundle do colega usa **/ticket/:token**:
+preservar essa rota e a autenticação administrativa. Totem e monitoramento
+funcionais não foram comprovados. Não criar outro React.
+
+Python não acessa o banco Java nem implementa regras de sessões/pagamento.
+O mock HTTP permanece como ferramenta de teste. O JV-02 agora tem contrato
+implementado em [API_CONTRACT.md](API_CONTRACT.md), limitado ao **registro de
+eventos**; não comprova sessões, ocupação, pagamento ou cancela.
+
+## 2. Issues e Project
+
+Estados consultados no GitHub. Done/Issue fechada não comprova automaticamente
+dependências externas. Apenas JV-02 foi movido para In progress e depois
+In review nesta execução; demais cards preservados.
+
+| Issue | Estado GitHub / Project | Situação |
 |---|---|---|
-| Python/FastAPI | MP4 local, frames, câmeras lógicas, eventos, simulação assistida, transporte HTTP; OCR experimental separado | Backend executável em `backend/parking-vision-python`; OCR não integrado |
-| Java/Spring Boot | Sessões, tickets/QR, setores, ocupação estimada, recomendação, pagamento demonstrativo, janela de saída e cancela | Backend funcional não publicado nas branches inspecionadas; integração real não executada |
-| React compartilhado | Interfaces administrativas, motorista e totem; monitoramento em `frontend/src/features/monitoring` | Fontes do aplicativo não publicadas; PY-07 bloqueado |
+| [#1 PY-01](https://github.com/billyyfalcao/articuno/issues/1) | CLOSED / Done | Integrado, PR #10: FastAPI, health, configuração, CORS |
+| [#2 PY-02](https://github.com/billyyfalcao/articuno/issues/2) | CLOSED / Done | Integrado, PR #12: MP4, amostragem e processamento em background |
+| [#3 PY-03](https://github.com/billyyfalcao/articuno/issues/3) | OPEN / In progress | PR #13 aberto; leitura real completa não validada; não integrar |
+| [#4 PY-04](https://github.com/billyyfalcao/articuno/issues/4) | CLOSED / Done | Integrado, PR #14: eventos, câmeras, deduplicação local |
+| [#5 PY-05](https://github.com/billyyfalcao/articuno/issues/5) | CLOSED / Done | Integrado, PR #16: cliente HTTP; transporte ao receptor real validado no JV-02, efeitos de negócio pendentes |
+| [#6 PY-06](https://github.com/billyyfalcao/articuno/issues/6) | CLOSED / Done | Integrado, PR #15: simulador e histórico local |
+| [#7 PY-07](https://github.com/billyyfalcao/articuno/issues/7) | OPEN / Backlog | Bloqueado pelas fontes React; sem PR |
+| [#8 PY-08](https://github.com/billyyfalcao/articuno/issues/8) | OPEN / Backlog | PR #17 integrado; aceite ponta a ponta com OCR/Java/React permanece parcial |
+| [#9 PY-09](https://github.com/billyyfalcao/articuno/issues/9) | OPEN / Backlog | P1 opcional, não iniciado |
+| [#19 JV-01](https://github.com/billyyfalcao/articuno/issues/19) | CLOSED / Done | PR #26 integrado: Java 21, Spring Boot, SQLite, health |
+| [#20 JV-02](https://github.com/billyyfalcao/articuno/issues/20) | OPEN / In review | PR #27 aberto; receptor autenticado, persistência e idempotência testados |
+| [#21 JV-03](https://github.com/billyyfalcao/articuno/issues/21) | OPEN / Backlog | Sessões, setores, capacidade/ocupação estimada e transições de negócio pendentes |
+| [#22 JV-04](https://github.com/billyyfalcao/articuno/issues/22) | OPEN / Backlog | Ciclo de negócio completo Python ↔ Java pendente |
+| [#23 JV-05](https://github.com/billyyfalcao/articuno/issues/23) | OPEN / Backlog | Ticket/token/QR e consulta do motorista pendentes |
+| [#24 JV-06](https://github.com/billyyfalcao/articuno/issues/24) | OPEN / Backlog | Pagamento demonstrativo e autorização de saída pendentes |
+| [#25 JV-07](https://github.com/billyyfalcao/articuno/issues/25) | OPEN / Backlog | Consolidação final; testes incrementais executados nos cards |
 
-As três interfaces acordadas são:
-
-1. **Painel administrativo — `/admin`:** dados administrativos do Java e área
-   de monitoramento do Python. Preservar a autenticação do colega.
-2. **Portal do motorista — `/motorista/:token` no planejamento:** o build
-   existente usa **`/ticket/:token`** e subrotas. Preservar essa rota até
-   coordenação explícita; não renomear silenciosamente.
-3. **Totem de entrada — `/totem/entrada`:** interface prevista, sem implementação
-   funcional comprovada no material publicado.
-
-Python não cria sessões, tickets, regras de cobrança ou ocupação. O mock HTTP
-é somente um receptor de testes, não uma implementação alternativa do Java.
-Não há `docs/API_CONTRACT.md` publicado na base conferida. Método, rota,
-autenticação, respostas e efeitos de negócio precisam de confirmação do Java.
-O destino do cliente HTTP é configurável; nenhuma rota proposta é definitiva.
-
-## 2. Issues, Project e critérios efetivamente atendidos
-
-Estados abaixo lidos do GitHub nesta conferência. **Issue fechada ou card Done
-não comprova critérios que dependem de serviços ainda indisponíveis.** Nenhum
-status foi alterado durante a criação deste resumo.
-
-| Issue | GitHub / Project | PR | Situação técnica |
-|---|---|---|---|
-| [#1 — PY-01](https://github.com/billyyfalcao/articuno/issues/1) | CLOSED / Done | [#10, integrado](https://github.com/billyyfalcao/articuno/pull/10) | Estrutura FastAPI, health, configuração validada, CORS e testes integrados |
-| [#2 — PY-02](https://github.com/billyyfalcao/articuno/issues/2) | CLOSED / Done | [#12, integrado](https://github.com/billyyfalcao/articuno/pull/12) | MP4 local, amostragem, início/parada/estado, análise única em background integrados |
-| [#3 — PY-03](https://github.com/billyyfalcao/articuno/issues/3) | OPEN / In progress | [#13, aberto](https://github.com/billyyfalcao/articuno/pull/13) | OCR experimental; nenhuma placa real completa corretamente reconhecida e comprovada; não integrar agora |
-| [#4 — PY-04](https://github.com/billyyfalcao/articuno/issues/4) | CLOSED / Done | [#14, integrado](https://github.com/billyyfalcao/articuno/pull/14) | Eventos, mapa de câmeras/transições, deduplicação e idempotência locais integrados |
-| [#5 — PY-05](https://github.com/billyyfalcao/articuno/issues/5) | CLOSED / Done | [#16, integrado](https://github.com/billyyfalcao/articuno/pull/16) | Cliente HTTP e falhas/retries validados com mock. **Integração Spring Boot e efeitos de negócio pendentes**, apesar do estado administrativo |
-| [#6 — PY-06](https://github.com/billyyfalcao/articuno/issues/6) | CLOSED / Done | [#15, integrado](https://github.com/billyyfalcao/articuno/pull/15) | Simulador, histórico e resultados locais integrados; não representam sessões Java |
-| [#7 — PY-07](https://github.com/billyyfalcao/articuno/issues/7) | OPEN / Backlog | Nenhum | Bloqueado tecnicamente por falta das fontes React; diagnóstico preservado, sem recriar frontend |
-| [#8 — PY-08](https://github.com/billyyfalcao/articuno/issues/8) | OPEN / Backlog | [#17, integrado](https://github.com/billyyfalcao/articuno/pull/17) | Estabilização, testes locais/mock e documentação integrados; aceite ponta a ponta ainda parcial |
-| [#9 — PY-09](https://github.com/billyyfalcao/articuno/issues/9) | OPEN / Backlog | Nenhum | P1 opcional, não iniciado; aguardar estabilidade e integração P0 |
-
-O Project possui os estados Backlog, Ready, In progress, In review e Done.
-PY-07 está bloqueado por dependência, embora seu status real seja Backlog.
-PY-08 não deve ser marcado como integralmente concluído apenas pelo merge #17.
-A movimentação dos cards continua manual, salvo autorização explícita.
+Project: Backlog, Ready, In progress, In review e Done. Não existe status
+Blocked; PY-07 está tecnicamente bloqueado em Backlog. Novas mudanças de status
+seguem as autorizações específicas da equipe, sem movimentar outros cards.
 
 ## 3. Branches e PRs
 
-Referências atualizadas por `git fetch origin` nesta sessão:
+`git fetch origin` confirmou ausência de nova publicação do colega no Java/React.
 
 | Branch remota | Commit | Observação |
 |---|---|---|
-| `origin/develop` | `6e3deac` | Branch de integração; contém PY-01/02/04/05/06 e trabalho independente do PY-08 |
-| `origin/main` | `0b7c053` | Merge anterior pelo [PR #11](https://github.com/billyyfalcao/articuno/pull/11); usuário pediu preservar, sem reversão |
-| `origin/development` | `8230038` | Branch distinta de develop; build React e dependências do colega, sem fontes recuperáveis do aplicativo |
-| `origin/feat/PY-01-estrutura-fastapi` | `8a992f9` | PR #10 integrado |
-| `origin/feat/PY-02-processamento-video` | `a964680` | PR #12 integrado |
-| `origin/feat/PY-03-ocr-placas` | `89ed134` | PR #13 aberto para develop; preservar separado |
-| `origin/feat/PY-04-eventos-cameras` | `2c7d6fa` | PR #14 integrado |
-| `origin/feat/PY-05-cliente-java` | `00ed519` | PR #16 integrado |
-| `origin/feat/PY-06-simulador-cameras` | `31c82b0` | PR #15 integrado |
-| `origin/feat/PY-08-testes-estabilizacao` | `f68fd69` | PR #17 integrado; commits `93d34b0` e `f68fd69` preservados |
+| origin/develop | 885b354 | Integra PY-01/02/04/05/06, trabalho independente PY-08, documento #18 e JV-01 #26 |
+| origin/main | 0b7c053 | Merge anterior preservado conforme pedido da equipe |
+| origin/development | 8230038 | Build/dependências React, sem fontes recuperáveis; não é base de integração |
+| origin/docs/PY-08-project-status | 8799b26 | PR #18 integrado |
+| origin/feat/JV-01-estrutura-springboot | c80ab6d | PR #26 integrado |
+| origin/feat/JV-02-eventos-idempotencia | Consultar head do PR #27 | Branch publicada; receptor e documentação em revisão |
+| origin/feat/PY-03-ocr-placas | 89ed134 | PR #13 OPEN, base develop; nenhuma alteração nesta execução |
+| origin/feat/PY-08-testes-estabilizacao | f68fd69 | PR #17 integrado |
+| origin/feat/PY-01-estrutura-fastapi | 8a992f9 | PR #10 integrado |
+| origin/feat/PY-02-processamento-video | a964680 | PR #12 integrado |
+| origin/feat/PY-04-eventos-cameras | 2c7d6fa | PR #14 integrado |
+| origin/feat/PY-05-cliente-java | 00ed519 | PR #16 integrado |
+| origin/feat/PY-06-simulador-cameras | 31c82b0 | PR #15 integrado |
 
-Não há branch/PR PY-07 publicado nesta conferência. O único PR aberto listado
-é #13. Nenhum merge foi realizado pelo agente nesta tarefa.
+O checkout estava limpo antes da criação da branch JV-02. As branches locais
+develop (c953fee) e main (e3a08d5) continuam preservadas e atrasadas. Trabalhos
+novos devem partir de origin/develop atualizado; nenhum merge automático.
 
-O checkout estava limpo em `feat/PY-08-testes-estabilizacao` antes da criação
-da branch de documentação. As referências **locais** `develop` (`c953fee`) e
-`main` (`e3a08d5`) estão atrasadas; não foram movidas. Para novo trabalho, usar
-`origin/develop` novamente atualizado, preservando eventuais alterações locais.
-Não confundir `development` com a branch de integração `develop`.
+## 4. Endpoints e limites atuais
 
-## 4. FastAPI disponível na base integrada
+FastAPI integrado, conferido em app/main.py e app/simulator.py:
 
-Rotas verificadas em `app/main.py` e `app/simulator.py`:
-
-| Método e rota | Comportamento disponível |
+| Método / rota | Função |
 |---|---|
-| `GET /health` | Retorna `{"status":"ok"}`; não verifica Java ou OCR |
-| `GET /api/v1/vision/status` | Estado e contadores da análise local |
-| `POST /api/v1/vision/analyze/start` | Inicia MP4 por `filename`, com `sample_every` configurável; HTTP 202 |
-| `POST /api/v1/vision/analyze/stop` | Solicita parada cooperativa |
-| `GET /api/v1/vision/cameras` | Mapa lógico, setores e indicação explícita de simulador/ausência de hardware |
-| `POST /api/v1/vision/events/simulate` | Valida e registra operação ASSISTED ou SIMULATION usando o registro PY-04 |
-| `GET /api/v1/vision/events` | Histórico em memória, com `offset` e `limit` (máximo 100) |
-| `GET /api/v1/vision/events/{event_id}` | Evento e resultado local/HTTP conhecido |
-| `POST /api/v1/vision/events/{event_id}/send` | Envia pelo transporte configurado, mantendo event_id; não envia se desabilitado |
+| GET /health | Saúde local, sem verificar Java/OCR |
+| GET /api/v1/vision/status | Estado/contadores do vídeo |
+| POST /api/v1/vision/analyze/start | Iniciar por filename e sample_every; 202 |
+| POST /api/v1/vision/analyze/stop | Parada cooperativa |
+| GET /api/v1/vision/cameras | Mapa lógico e setores de demonstração |
+| POST /api/v1/vision/events/simulate | ASSISTED/SIMULATION pelo pipeline PY-04 |
+| GET /api/v1/vision/events | Histórico local; offset/limit até 100 |
+| GET /api/v1/vision/events/{event_id} | Evento e resultado local/HTTP |
+| POST /api/v1/vision/events/{event_id}/send | Transporte HTTP configurado, mesmo event_id |
 
-Swagger disponível em `/docs`. Não há upload, streaming de MP4 ou OCR ativo
-nessa base. As rotas de detecções/imagem do PR #13 não estão integradas.
+Swagger: /docs. Não há upload/streaming MP4 nem OCR ativo nesta base.
+Câmeras de exemplo: CAM_ENTRADA, CAM_A_B (A→B), CAM_SAIDA. Uma nova passagem
+usa outro operation_id; retry da mesma operação preserva event_id. Entrada
+assistida aceita ausência de placa/sessão; PASSAGE/EXIT sem placa precisam de
+session_id. Fonte manual não recebe confiança fictícia. Enum: SIMULATION.
 
-- Câmeras de exemplo: CAM_ENTRADA (ENTRY), CAM_A_B (PASSAGE A→B), CAM_SAIDA
-  (EXIT). São configuração de demonstração, não mapeamento Java confirmado.
-- `operation_id` identifica a mesma operação entre leituras/reenvios;
-  reutilizá-lo preserva `event_id`. Uma passagem posterior legítima usa outro
-  `operation_id`. Não há rastreamento automático de veículos entre frames.
-- ENTRY assistido permite placa e sessão nulas. PASSAGE/EXIT sem placa exigem
-  `session_id` conhecido; o Python não comprova a existência da sessão no Java.
-- Fonte manual não recebe confiança fictícia. O enum é **SIMULATION**, não
-  SIMULATED. OCR continua uma origem prevista, sem detector integrado.
-- `LOCAL_VALIDATED` é validação local; `HTTP_ACKNOWLEDGED` é somente HTTP 2xx.
-  Nenhum deles comprova criação de sessão/ticket. Timeout/5xx podem resultar
-  em `UNCERTAIN`; não gerar novo ID para contornar uma operação incerta.
-- Retry automático só é habilitado com garantia explícita de idempotência do
-  receptor. URL base, caminho de envio, timeout e chave interna são configuráveis;
-  a chave nunca deve ir ao frontend ou aos logs.
-- Registros limitados a 1.000 operações, em memória, perdidos ao reiniciar.
-  Usar um worker e loopback. CORS não é autenticação do operador.
+Histórico Python é em memória, limitado a 1.000 operações. Usar um worker e
+loopback. LOCAL_VALIDATED é validação local; HTTP_ACKNOWLEDGED é transporte 2xx.
+Timeout/5xx podem deixar UNCERTAIN; não gerar outro ID para contornar incerteza.
 
-## 5. Testes e evidências
+Java integrado JV-01: GET /health. **Nesta branch JV-02:**
 
-**Reexecutados nesta sessão**, no Windows, usando o venv existente e o código
-integrado em `6e3deac`:
-
-| Comando na pasta `backend/parking-vision-python` | Resultado |
+| Método / rota | Função |
 |---|---|
-| `.venv/Scripts/python.exe -m pytest -q` | **96 passed, 1 warning**, 2,12 s, sem skips |
-| `.venv/Scripts/python.exe -m pip check` | **No broken requirements found** |
+| POST /api/v1/internal/vision-events | Valida e persiste evento/recibo no SQLite; 200 RECORDED |
+| GET /api/v1/internal/vision-events/{event_id} | Consulta evento e recibo persistidos |
 
-O aviso é a depreciação do uso de HTTPX no TestClient/Starlette. A mensagem
-OpenCV `moov atom not found` corresponde ao teste intencional de MP4 corrompido.
-Não foi feita atualização de dependências ou alteração de código nesta tarefa.
+As rotas internas exigem X-Internal-API-Key; chave ausente no servidor desabilita
+o receptor com 503, sem derrubar health. Replay idêntico retorna recibo original;
+mesmo ID com outro conteúdo retorna 409. A PK do SQLite controla concorrência.
+Schema 1→2 migra em transação; fazer backup antes da atualização e não executar
+binário JV-01 sobre schema 2. Registros JV-02 não representam sessões nem serão
+automaticamente interpretados como efeitos de negócio retroativos.
 
-**Evidências anteriores registradas no PR #17 e no
-[BACKEND_RUNBOOK.md](../backend/parking-vision-python/BACKEND_RUNBOOK.md):**
+Configurar URL base, endpoint e chave no Python conforme
+[contrato](API_CONTRACT.md). JAVA_IDEMPOTENCY_CONFIRMED=true é suportado por este
+receptor. A chave permanece nos servidores. O cliente Python atual descarta
+o corpo da resposta; consultar o GET interno para conferir o recibo.
 
-- Dois processos locais reais: FastAPI → mock HTTP, executados por
-  `tools/demo_http.py`. ENTRY/PASSAGE/EXIT com sucesso, 500 transitório,
-  timeout transitório, 401, 403, 422 e 500 persistente; IDs, payloads,
-  tentativas e ausência de retransmissão após sucesso conferidos.
-- Fluxo assistido sem placa, rejeição de transição inválida com 422,
-  deduplicação e passagem posterior legítima validados.
-- Falhas de configuração, logs sanitizados e bloqueio de reenvio incerto sem
-  garantia de idempotência cobertos. Corrigidos caracteres de controle no
-  destino HTTP e estado terminal quando a liberação da captura falha.
-- MP4 autorizado: 1.800 frames lidos e 60 amostrados (`sample_every=30`),
-  estado completed e health responsivo. **Sem OCR**.
-- Startup com timeout inválido rejeitado sem expor valor ou segredo de teste;
-  suíte também validada com variável de idempotência do operador para conferir
-  isolamento dos testes.
+## 5. Evidências executadas no JV-02
 
-Esses ensaios funcionais anteriores **não foram repetidos nesta tarefa de
-documentação**. Não houve teste com Spring Boot, build/smoke React ou validação
-de pagamento/cancela. Instalação limpa e execução Linux não foram repetidas;
-Linux está documentado, não comprovado neste ambiente.
+Ambiente Windows; JDK Microsoft **21.0.7** em C:/Users/USER/.jdks/ms-21.0.7.
+O Java do PATH continua **17**; Maven e JAR foram executados com JAVA_HOME=21.
+pom.xml usa release 21. O JAR requer Java 21; não funciona no Java 17.
 
-## 6. OCR e mídia local — PR #13 preservado
+| Verificação | Resultado |
+|---|---|
+| Maven Wrapper clean verify, com cache local e modo offline | BUILD SUCCESS; **52 testes**, 0 falhas/erros/skips, JAR gerado |
+| Python pytest -q, venv existente | **96 passed, 1 warning** preexistente HTTPX/TestClient |
+| Python pip check | No broken requirements found |
+| Produtor/cliente Python originais → JAR Spring Boot real | ENTRY/PASSAGE/EXIT 200, consultas/replays, entrada sem placa, conflito409, inválido422, autenticação401 |
+| Java parado e reiniciado no mesmo banco | UNCERTAIN/timeout após 3 tentativas; depois recibos/IDs originais preservados |
+| Testes HTTP Java com 2 instâncias / 12 requisições concorrentes | Um único registro e respostas idênticas |
+| Revisão independente e regressões corrigidas | Chave literal com caracteres de placeholder, expoente numérico extremo, offsets Python acima de 18h |
 
-O PR #13 permanece aberto em `feat/PY-03-ocr-placas`, commit `89ed134`, sem merge.
-O texto bruto do OCR é separado da normalização/validação brasileira
-(`ABC1234` e `ABC1D23`). Leituras inválidas ou fracas não autorizam eventos.
+Comandos, fixture real do modelo Python, evidências e limites:
+[JV02_RECEIVER.md](../backend/parking-core-java/JV02_RECEIVER.md).
+Demo reproduzível: tools/demo_vision_events.py dentro do serviço Java.
+O ensaio inicia o JAR e usa diretamente EventRegistry/JavaClient existentes;
+**não inicia servidor FastAPI nem React e não comprova o ciclo do JV-04**.
+Nenhum arquivo funcional Python/React foi alterado.
 
-Diagnóstico disponível na branch OCR:
-[OCR_DIAGNOSTIC.md](https://github.com/billyyfalcao/articuno/blob/89ed134/backend/parking-vision-python/OCR_DIAGNOSTIC.md).
-O vídeo estrangeiro é 1920×1080, 30 fps, 1.800 frames, mas os recortes de placa
-medidos têm apenas 74–94 × 22–25 pixels e desfoque. ROI fixa e amostragem a cada
-300 frames também perdiam o enquadramento durante a passagem.
+Evidências anteriores do PY-08 permanecem em
+[BACKEND_RUNBOOK.md](../backend/parking-vision-python/BACKEND_RUNBOOK.md):
+FastAPI → mock em dois processos, erros 401/403/422/500/timeout, fluxo assistido,
+deduplicação e vídeo com 1.800 frames/60 amostras e health responsivo.
+Esses ensaios anteriores não foram repetidos integralmente no JV-02.
+Linux/instalação limpa, build React, sessões, pagamento e cancela não validados.
 
-Foram comparados recortes, frames, escala, cinza, Otsu, CLAHE, margens e modos
-Tesseract. Houve melhora parcial: no frame 150, `APOS JED` passou a `APOS JEO`,
-com confiança 0,91, enquanto a transcrição visual era `AP05 JEO`. Persistiram
-dois caracteres errados. **Nenhuma leitura completa correta de placa real foi
-comprovada.** Confiança alta não foi tratada como prova; não houve substituição
-de caracteres para forçar acerto nem mudança global de filtros sem evidência.
+## 6. OCR e vídeo — PR #13 preservado
 
-Testes com texto brasileiro sintético não comprovam reconhecimento de fotos
-reais. Fotografias brasileiras reais autorizadas e validação real continuam
-pendentes. A suíte atual de 96 testes não incorpora o OCR desse PR.
+PR #13 continua OPEN, commit 89ed134. Não integrar sem validação real.
+Texto bruto e validação brasileira permanecem separados. Nenhuma placa real
+completa foi corretamente reconhecida e comprovada. No diagnóstico anterior,
+o vídeo tinha 1920×1080/30fps, mas placas de apenas 74–94 × 22–25 pixels com
+desfoque. Pré-processamento melhorou parcialmente APOS JED para APOS JEO,
+confiança 0,91, diante de transcrição visual AP05 JEO: ainda dois erros.
+Confiança alta e testes sintéticos não comprovam OCR real; fotos brasileiras
+autorizadas e validação real continuam pendentes.
 
-Arquivo local conferido:
-`backend/parking-vision-python/videos/License_Plate_Detection_Test_1080p.mp4`
-(18.457.901 bytes). O nome **não é `estacionamento.mp4`**. `git check-ignore`
-confirmou a proteção; `videos/` e `*.mp4` estão ignorados. O vídeo não está no
-commit e precisará ser disponibilizado localmente em outro computador.
+[Diagnóstico OCR na branch preservada](https://github.com/billyyfalcao/articuno/blob/89ed134/backend/parking-vision-python/OCR_DIAGNOSTIC.md).
 
-## 7. Dependências externas bloqueadas
+Arquivo local: backend/parking-vision-python/videos/License_Plate_Detection_Test_1080p.mp4
+(18.457.901 bytes). **estacionamento.mp4 não existe neste checkout.**
+Vídeos/imagens locais permanecem ignorados e não entram em commits.
 
-**Java:** não foram encontrados fontes `.java`, `pom.xml` ou `build.gradle`
-do aplicativo nas branches remotas inspecionadas. Isso descreve o material
-publicado, não o trabalho local do colega. Não existe evidência de backend
-funcional disponível para estes testes. Confirmar contrato e testar sessão,
-ticket, idempotência persistente, setores/ocupação, pagamento e saída contra
-Spring Boot antes de declarar integração real ou concluir o aceite do PY-05.
+## 7. React e demais pendências
 
-**React / PY-07:** `origin/development` (`8230038`) contém **13 arquivos em
-dist e 6.179 em node_modules**. Fora dessas pastas há apenas configuração de
-editor e o documento original da entrega. Faltam fontes `src`, `package.json`
-e configurações do aplicativo; não há projeto React recuperável com build
-reproduzível. As outras branches remotas também não forneceram essas fontes.
+origin/development (8230038) mantém 13 arquivos em dist e 6.179 em node_modules;
+faltam src, package.json e configurações do aplicativo recuperáveis.
+O build do colega sugere rotas administrativas e /ticket/:token, com telas
+“Em construção”; não comprova funcionamento real nem consumo de APIs.
+Não houve npm build/smoke ou integração React ↔ FastAPI.
 
-O diagnóstico anterior do bundle identificou layouts/rotas administrativas e
-do motorista (`/ticket/:token`), com páginas de conteúdo ainda “Em construção”.
-Isso não comprova telas funcionais ou chamadas a APIs reais. Não foi executado
-`npm run build`, smoke test ou integração React ↔ FastAPI.
+Menor risco: colega publicar fontes, manifesto/lockfile, configs e assets;
+reutilizar seletivamente em branch PY-07, preservar autenticação/rotas,
+sem importar dist/node_modules ou criar segundo React.
 
-Próxima ação de menor risco: o colega publicar fontes, manifesto/lockfile,
-configurações e assets necessários. Reutilizar seletivamente em branch própria,
-preservar autenticação e rotas, não importar `node_modules`/`dist`, não criar
-segundo React e não reconstruir o frontend a partir de código minificado.
+Java **já existe**, mas sessões, setores e regras de saída ainda não.
+Nenhum EXIT recebido pelo JV-02 autoriza cancela ou encerra sessão.
+Link público é apenas planejamento no README Java: nenhum deploy/túnel criado,
+nem autorização para implementar infraestrutura nesta etapa.
 
-## 8. Prioridades até as 12h
+## 8. Prioridades até as 12h e retomada
 
-Ordem sugerida para a retomada; nenhuma destas ações foi iniciada por este
-commit de documentação:
+1. Revisar/autorizar merge do JV-02. Aguardar equipe; não fazer merge automático.
+2. Após merge, JV-03 a partir de develop atualizado: sessões, setores e
+   ocupação estimada; definir comportamento da entrada sem placa e transições.
+3. JV-04: FastAPI → Java reais, consultar estado de negócio, duplicação e falhas.
+   Não anunciar saída autorizada enquanto as regras de saída estiverem pendentes.
+4. JV-05/JV-06: ticket/token/QR e pagamento demonstrativo/saída, com regras
+   confirmadas no documento da equipe. Consolidar testes JV-07/PY-08.
+5. Retomar PY-07 quando fontes chegarem. Manter fallback assistido; não depender
+   de OCR nem iniciar PY-09. Demonstração local vem antes da publicação.
+6. Antes da apresentação, registrar exatamente quais cenários funcionam.
 
-1. **Preservar uma demonstração reproduzível do backend já integrado.** Seguir
-   o runbook, usar Swagger para ENTRY → PASSAGE A→B → EXIT e o mock explícito
-   para transporte/falhas. Mostrar resultados locais sem anunciar sessão,
-   ticket, ocupação ou cancela reais.
-2. **Desbloquear dependências com a equipe:** obter fontes React e contrato/
-   backend Java executável. Quando disponíveis, confirmar contrato antes de
-   configurar envio e validar ENTRY com sessão/ticket, duplicação, PASSAGE e
-   EXIT com pagamento/janela. Não substituir essa prova pelo mock.
-3. **Retomar PY-07 após as fontes:** monitoramento em um único React, usando
-   os endpoints reais listados acima. Preservar autenticação e `/ticket/:token`;
-   mostrar indisponibilidade de Java/OCR. Executar build e smoke real.
-4. **Manter fallback assistido e limitar esforço de OCR:** validar amostra
-   real mais nítida/autorizada quando disponível, registrar resultado bruto
-   e validação brasileira separados. Não integrar #13 sem evidência exigida
-   nem iniciar melhorias opcionais PY-09 antes do P0.
-5. **Repassar a matriz PY-08 antes da entrega:** executar os testes/fluxos
-   afetados pelas mudanças, registrar quais dependências chegaram a funcionar,
-   revisar PRs com a equipe e apresentar limitações remanescentes. Se Java ou
-   React continuarem ausentes, entregar a demo local identificada como tal;
-   não declarar MVP ponta a ponta concluído.
+Para outra sessão: ler este arquivo, contrato e README/guia JV-02 Java, além de
+EVENTS.md, SIMULATOR.md, HTTP_CLIENT.md e BACKEND_RUNBOOK.md do Python.
+Conferir git status/branch/log e git fetch origin, PRs/Issues/Project.
+Nesta máquina gh pode exigir caminho completo:
+`C:/Program Files/GitHub CLI/gh.exe`.
 
-## 9. Como continuar em outra sessão
-
-1. Ler este arquivo e o
-   [runbook do backend](../backend/parking-vision-python/BACKEND_RUNBOOK.md).
-   Detalhes: [README](../backend/parking-vision-python/README.md),
-   [eventos](../backend/parking-vision-python/EVENTS.md),
-   [simulador](../backend/parking-vision-python/SIMULATOR.md) e
-   [cliente HTTP](../backend/parking-vision-python/HTTP_CLIENT.md).
-2. Executar `git status --short --branch`, `git branch --show-current` e
-   `git log -3 --oneline`. Esta documentação fica em **commit local**, na
-   branch `docs/PY-08-project-status`; não estará disponível em outro clone
-   até publicação autorizada. `git log -1 -- docs/PROJECT_STATUS.md` identifica
-   o commit do resumo.
-3. Fazer `git fetch origin` e conferir novamente Issues, PRs e Project. Exemplo:
-
-   ```powershell
-   gh pr list --repo billyyfalcao/articuno --state all
-   gh issue list --repo billyyfalcao/articuno --state all
-   gh project item-list 6 --owner billyyfalcao --limit 100 --format json
-   ```
-
-   Nesta máquina, quando `gh` não está no PATH, usar
-   `& 'C:/Program Files/GitHub CLI/gh.exe'` no lugar de `gh`.
-4. Para execução local, na pasta do serviço:
-
-   ```powershell
-   .venv/Scripts/python.exe -m uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8000
-   ```
-
-   O venv e `.env` são locais e ignorados. Para ambiente novo, seguir instalação
-   do runbook; não sobrescrever `.env` existente nem imprimir seus segredos.
-5. Preservar o PDF original em `docs/`, o PR #13, a branch `development` e
-   trabalho alheio. Criar branches de trabalho a partir de `origin/develop`
-   atualizado; não commitar diretamente em main/develop, não forçar push e
-   não fazer merge automático. A tarefa atual termina com o resumo salvo:
-   não iniciar outra implementação como efeito desta documentação.
+Instruções Windows para os serviços estão nos READMEs; Java seleciona JDK 21
+por terminal, Python usa venv e Uvicorn. React permanece bloqueado.
+Preservar PDF original em docs/, PR #13, development e alterações alheias.
+Não commitar .env, .venv, bancos, vídeos ou segredos; não forçar push, não
+commitar em main/develop e não iniciar outro card sem autorização.
