@@ -1,6 +1,6 @@
 # Articuno — estado do projeto e retomada
 
-Conferido no GitHub em **14/11/2026, às 08:40 (UTC−03)**. Prazo da equipe:
+Conferido no GitHub em **14/11/2026**, durante a entrega do JV-02. Prazo da equipe:
 **14/11/2026 às 12h**. Consultar novamente o remoto antes de continuar.
 
 - Repositório: [billyyfalcao/articuno](https://github.com/billyyfalcao/articuno).
@@ -9,8 +9,9 @@ Conferido no GitHub em **14/11/2026, às 08:40 (UTC−03)**. Prazo da equipe:
 - **JV-01 já integrado:** [PR #26](https://github.com/billyyfalcao/articuno/pull/26),
   merge em 14/11 às 04:16:05 de Brasília. Não repetir a estrutura Java.
 - Branch atual: `feat/JV-02-eventos-idempotencia`, baseada nesse develop.
-  Receptor JV-02 implementado e testado nesta branch; ainda depende da revisão
-  e do merge pela equipe. Publicação do PR pendente neste snapshot.
+  Receptor JV-02 implementado, testado e publicado no
+  [PR #27](https://github.com/billyyfalcao/articuno/pull/27), OPEN para develop.
+  Card em In review; aguarda revisão/merge pela equipe, sem auto-merge.
 - O resumo anterior, publicado pelo [PR #18](https://github.com/billyyfalcao/articuno/pull/18),
   dizia que Java estava ausente e que este documento era apenas local. Essas
   informações estão desatualizadas e foram corrigidas aqui.
@@ -39,7 +40,8 @@ eventos**; não comprova sessões, ocupação, pagamento ou cancela.
 ## 2. Issues e Project
 
 Estados consultados no GitHub. Done/Issue fechada não comprova automaticamente
-dependências externas. Apenas JV-02 foi movido para In progress nesta execução.
+dependências externas. Apenas JV-02 foi movido para In progress e depois
+In review nesta execução; demais cards preservados.
 
 | Issue | Estado GitHub / Project | Situação |
 |---|---|---|
@@ -53,7 +55,7 @@ dependências externas. Apenas JV-02 foi movido para In progress nesta execuçã
 | [#8 PY-08](https://github.com/billyyfalcao/articuno/issues/8) | OPEN / Backlog | PR #17 integrado; aceite ponta a ponta com OCR/Java/React permanece parcial |
 | [#9 PY-09](https://github.com/billyyfalcao/articuno/issues/9) | OPEN / Backlog | P1 opcional, não iniciado |
 | [#19 JV-01](https://github.com/billyyfalcao/articuno/issues/19) | CLOSED / Done | PR #26 integrado: Java 21, Spring Boot, SQLite, health |
-| [#20 JV-02](https://github.com/billyyfalcao/articuno/issues/20) | OPEN / In progress | Receptor autenticado, persistência e idempotência testados nesta branch |
+| [#20 JV-02](https://github.com/billyyfalcao/articuno/issues/20) | OPEN / In review | PR #27 aberto; receptor autenticado, persistência e idempotência testados |
 | [#21 JV-03](https://github.com/billyyfalcao/articuno/issues/21) | OPEN / Backlog | Sessões, setores, capacidade/ocupação estimada e transições de negócio pendentes |
 | [#22 JV-04](https://github.com/billyyfalcao/articuno/issues/22) | OPEN / Backlog | Ciclo de negócio completo Python ↔ Java pendente |
 | [#23 JV-05](https://github.com/billyyfalcao/articuno/issues/23) | OPEN / Backlog | Ticket/token/QR e consulta do motorista pendentes |
@@ -75,6 +77,7 @@ seguem as autorizações específicas da equipe, sem movimentar outros cards.
 | origin/development | 8230038 | Build/dependências React, sem fontes recuperáveis; não é base de integração |
 | origin/docs/PY-08-project-status | 8799b26 | PR #18 integrado |
 | origin/feat/JV-01-estrutura-springboot | c80ab6d | PR #26 integrado |
+| origin/feat/JV-02-eventos-idempotencia | Consultar head do PR #27 | Branch publicada; receptor e documentação em revisão |
 | origin/feat/PY-03-ocr-placas | 89ed134 | PR #13 OPEN, base develop; nenhuma alteração nesta execução |
 | origin/feat/PY-08-testes-estabilizacao | f68fd69 | PR #17 integrado |
 | origin/feat/PY-01-estrutura-fastapi | 8a992f9 | PR #10 integrado |
