@@ -14,3 +14,5 @@ export { default as SectorTile } from './SectorTile';
 export { default as SessionDetailsModal } from './SessionDetailsModal';
 export { default as SessionStatusBadge } from './SessionStatusBadge';
 export { default as StatCard } from './StatCard';
+export { default as ThermalTicketPreview } from './ThermalTicketPreview';
+export { default as TotemDemoControls } from './TotemDemoControls';

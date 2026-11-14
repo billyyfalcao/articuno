@@ -5,6 +5,8 @@ const MESSAGES = {
   admin:
     'Modo demonstração local: dados simulados neste navegador e painel sem autenticação. Não utilize em produção.',
   driver: 'Modo demonstração: dados simulados. Nenhum pagamento real é realizado.',
+  totem:
+    'Modo demonstração local: Totem Digital de Entrada compartilhando dados simulados em tempo real com o Painel e a Interface do Motorista.',
 };
 
 export default function DemoBanner({ variant = 'admin' }) {

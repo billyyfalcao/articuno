@@ -40,6 +40,11 @@ export const routes = [
       { path: 'pagamento', lazy: lazyPage(() => import('@/pages/driver/PaymentPage')) },
     ],
   },
+  {
+    path: ROUTES.TOTEM.ENTRY,
+    errorElement: <NotFoundPage />,
+    lazy: lazyPage(() => import('@/pages/totem/EntryTotemPage')),
+  },
   { path: '*', element: <NotFoundPage /> },
 ];
 

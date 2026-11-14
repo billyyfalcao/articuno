@@ -1,5 +1,10 @@
 import { APP_CONFIG } from '@/config/app.config';
-import { AVAILABILITY_LEVEL, AVAILABILITY_META } from './constants';
+import { ENTRY_POINT, SECTOR_CONNECTIONS } from '@/mocks/sectors.config';
+import {
+  AVAILABILITY_LEVEL,
+  AVAILABILITY_META,
+  TOTEM_ENTRY_BLOCK_REASON,
+} from './constants';
 
 /**
  * Regras de disponibilidade e ocupação estimada dos setores.
@@ -84,4 +89,81 @@ export function rankSectorRecommendations(sectors = [], limit = APP_CONFIG.recom
     .filter((item) => item.vagasLivresEstimadas > 0)
     .sort((a, b) => b.score - a.score || a.distanciaEntrada - b.distanciaEntrada)
     .slice(0, limit);
+}
+
+/**
+ * Retorna os IDs dos setores fisicamente conectados ao ponto de entrada (ENTRADA),
+ * preservando integralmente SECTOR_CONNECTIONS.
+ */
+export function getEntryConnectedSectorIds() {
+  const connected = [];
+  for (const [origin, destination] of SECTOR_CONNECTIONS) {
+    if (origin === ENTRY_POINT && !connected.includes(destination)) {
+      connected.push(destination);
+    } else if (destination === ENTRY_POINT && !connected.includes(origin)) {
+      connected.push(origin);
+    }
+  }
+  return connected;
+}
+
+/**
+ * Avalia a disponibilidade geral do estacionamento para o Totem Digital de Entrada,
+ * separando claramente:
+ *  - `recommendedSector`: melhor setor geral para estacionar (70% vagas + 30% proximidade)
+ *  - `initialEntrySector`: setor de passagem na cancela conectado a ENTRADA (ex.: A ou B)
+ *  - `canIssueTicket` / `blockReason`: impede emissão caso não haja vagas no estacionamento
+ *    ou caso todos os setores conectados à entrada estejam sem capacidade disponível.
+ */
+export function evaluateTotemEntryAvailability(sectors = [], recommendations = null) {
+  const enrichedSectors = (Array.isArray(sectors) ? sectors : []).map((sector) => ({
+    ...sector,
+    ...computeSectorAvailability(sector),
+  }));
+
+  const totalCapacity = enrichedSectors.reduce((acc, s) => acc + s.capacidade, 0);
+  const totalOccupied = enrichedSectors.reduce((acc, s) => acc + s.ocupacaoEstimada, 0);
+  const totalFree = Math.max(0, totalCapacity - totalOccupied);
+  const occupancyPercent =
+    totalCapacity > 0 ? Math.round((totalOccupied / totalCapacity) * 100) : 0;
+
+  const rankedAll = rankSectorRecommendations(enrichedSectors, enrichedSectors.length || 7);
+  const topRecommendations =
+    Array.isArray(recommendations) && recommendations.length > 0
+      ? recommendations
+      : rankedAll.slice(0, APP_CONFIG.recommendation.topN);
+
+  const recommendedSector = topRecommendations[0] || rankedAll[0] || null;
+
+  const entryConnectedIds = getEntryConnectedSectorIds();
+  const entryConnectedSectors = enrichedSectors.filter((s) =>
+    entryConnectedIds.includes(s.id),
+  );
+  const availableEntrySectors = rankedAll.filter((rec) =>
+    entryConnectedIds.includes(rec.setorId),
+  );
+
+  const initialEntrySector = availableEntrySectors[0] || null;
+
+  let blockReason = TOTEM_ENTRY_BLOCK_REASON.NONE;
+  if (enrichedSectors.length > 0 && totalFree <= 0) {
+    blockReason = TOTEM_ENTRY_BLOCK_REASON.PARKING_FULL;
+  } else if (enrichedSectors.length > 0 && !initialEntrySector) {
+    blockReason = TOTEM_ENTRY_BLOCK_REASON.ENTRY_SECTORS_FULL;
+  }
+
+  return {
+    totalCapacity,
+    totalOccupied,
+    totalFree,
+    occupancyPercent,
+    enrichedSectors,
+    recommendations: topRecommendations,
+    recommendedSector,
+    entryConnectedIds,
+    entryConnectedSectors,
+    initialEntrySector,
+    canIssueTicket: enrichedSectors.length > 0 && blockReason === TOTEM_ENTRY_BLOCK_REASON.NONE,
+    blockReason,
+  };
 }

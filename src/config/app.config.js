@@ -14,9 +14,11 @@ export const APP_CONFIG = deepFreeze({
   brand: {
     team: 'Articuno',
     product: 'Estacionamento Inteligente',
+    venue: 'Capim Dourado Shopping',
   },
   locale: 'pt-BR',
   currency: 'BRL',
+  publicOrigin: env.VITE_PUBLIC_ORIGIN || '',
   api: {
     baseUrl: env.VITE_API_BASE_URL || 'http://localhost:3000/api',
     timeoutMs: 8000,
@@ -39,6 +41,11 @@ export const APP_CONFIG = deepFreeze({
     availabilityWeight: 0.7,
     proximityWeight: 0.3,
     topN: 3,
+  },
+  totem: {
+    thermalPaperWidthMm: 80,
+    autoResetSeconds: toNumber(env.VITE_TOTEM_AUTO_RESET_SECONDS, 25),
+    duplicatePlateCooldownMs: 6000,
   },
 });
 

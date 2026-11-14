@@ -68,3 +68,84 @@ export const AVAILABILITY_META = Object.freeze({
 });
 
 export const UNIDENTIFIED_PLATE_LABEL = 'Não identificada';
+
+/**
+ * Estados claros do ciclo de atendimento do Totem Digital de Entrada.
+ */
+export const TOTEM_STATE = Object.freeze({
+  WAITING_VEHICLE: 'AGUARDANDO_VEICULO',
+  IDENTIFYING_PLATE: 'IDENTIFICANDO_PLACA',
+  PLATE_IDENTIFIED: 'PLACA_IDENTIFICADA',
+  IDENTIFICATION_FAILED: 'FALHA_IDENTIFICACAO',
+  GENERATING_TICKET: 'GERANDO_TICKET',
+  TICKET_ISSUED: 'TICKET_EMITIDO',
+  PREPARING_PRINT: 'PREPARANDO_IMPRESSAO',
+  PRINT_REQUESTED: 'IMPRESSAO_SOLICITADA',
+  PRINT_SIMULATED: 'IMPRESSAO_SIMULADA',
+  PRINT_FAILED: 'FALHA_IMPRESSAO',
+  ISSUANCE_ERROR: 'ERRO_EMISSAO',
+});
+
+export const TOTEM_STATE_META = Object.freeze({
+  [TOTEM_STATE.WAITING_VEHICLE]: {
+    label: 'Aguardando veículo',
+    description: 'Posicione o veículo em frente ao sensor de entrada para leitura automática da placa.',
+    badgeVariant: 'info',
+  },
+  [TOTEM_STATE.IDENTIFYING_PLATE]: {
+    label: 'Identificando placa',
+    description: 'Câmera de entrada realizando leitura automática da placa do veículo...',
+    badgeVariant: 'info',
+  },
+  [TOTEM_STATE.PLATE_IDENTIFIED]: {
+    label: 'Placa identificada',
+    description: 'Placa reconhecida com sucesso. Preparando registro de entrada...',
+    badgeVariant: 'success',
+  },
+  [TOTEM_STATE.IDENTIFICATION_FAILED]: {
+    label: 'Falha na identificação',
+    description: 'Não foi possível identificar a placa automaticamente. Toque em "Emitir ticket" para prosseguir.',
+    badgeVariant: 'warning',
+  },
+  [TOTEM_STATE.GENERATING_TICKET]: {
+    label: 'Gerando ticket',
+    description: 'Registrando sessão de entrada e gerando token seguro do ticket...',
+    badgeVariant: 'info',
+  },
+  [TOTEM_STATE.TICKET_ISSUED]: {
+    label: 'Ticket emitido',
+    description: 'Sessão criada e ticket digital disponível para acesso via QR Code.',
+    badgeVariant: 'success',
+  },
+  [TOTEM_STATE.PREPARING_PRINT]: {
+    label: 'Preparando impressão',
+    description: 'Formatando comprovante térmico de 80 mm para impressão...',
+    badgeVariant: 'info',
+  },
+  [TOTEM_STATE.PRINT_REQUESTED]: {
+    label: 'Impressão solicitada',
+    description: 'Solicitação enviada para a janela de impressão do sistema. Retire seu ticket ou escaneie o QR Code.',
+    badgeVariant: 'success',
+  },
+  [TOTEM_STATE.PRINT_SIMULATED]: {
+    label: 'Impressão simulada',
+    description: 'Comprovante térmico preparado em modo demonstração. Você pode imprimir no navegador, salvar em PDF ou escanear o QR Code.',
+    badgeVariant: 'info',
+  },
+  [TOTEM_STATE.PRINT_FAILED]: {
+    label: 'Falha na impressão',
+    description: 'Não foi possível acionar a impressora térmica. Solicite a reimpressão do mesmo ticket ou escaneie o QR Code na tela.',
+    badgeVariant: 'warning',
+  },
+  [TOTEM_STATE.ISSUANCE_ERROR]: {
+    label: 'Erro na emissão',
+    description: 'Não foi possível concluir a emissão do ticket para esta entrada.',
+    badgeVariant: 'danger',
+  },
+});
+
+export const TOTEM_ENTRY_BLOCK_REASON = Object.freeze({
+  NONE: null,
+  PARKING_FULL: 'ESTACIONAMENTO_LOTADO',
+  ENTRY_SECTORS_FULL: 'SETORES_ENTRADA_SEM_CAPACIDADE',
+});
