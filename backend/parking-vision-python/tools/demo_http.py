@@ -6,9 +6,17 @@ import subprocess
 import sys
 import time
 import urllib.request
+import urllib.error
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def create_demo_app():
+    """Use only the child process environment, never the operator's .env file."""
+    from app.config import Settings
+    from app.main import create_app
+    return create_app(Settings(_env_file=None))
 
 
 def request(port, path, body=None):
@@ -45,8 +53,9 @@ def main():
             configured = dict(env, JAVA_API_BASE_URL='http://127.0.0.1:19001',
                               JAVA_EVENTS_ENDPOINT='/mock/' + scenario, INTERNAL_API_KEY='local-mock-only',
                               JAVA_IDEMPOTENCY_CONFIRMED='true', JAVA_TIMEOUT='.3', JAVA_RETRY_DELAY='0',
-                              JAVA_MAX_RETRIES='2')
-            api = start('app.main:create_app', 19002, configured, '/health', factory=True)
+                              JAVA_MAX_RETRIES='2', CAMERA_CONFIG=str(ROOT / 'cameras.example.json'),
+                              CORS_ORIGINS='[]', VIDEO_ROOT=str(ROOT / 'videos'))
+            api = start('tools.demo_http:create_demo_app', 19002, configured, '/health', factory=True)
             try:
                 for camera, kind, route in [('CAM_ENTRADA', 'ENTRY', {}), ('CAM_A_B', 'PASSAGE', dict(origin_sector='A', destination_sector='B')), ('CAM_SAIDA', 'EXIT', {})]:
                     body = dict(operation_id=kind, camera_id=camera, event_type=kind, plate='ABC1D23', source='SIMULATION', **route)
@@ -61,6 +70,28 @@ def main():
                     if expected == 'HTTP_ACKNOWLEDGED':
                         assert request(19002, f"/api/v1/vision/events/{event['event_id']}/send", {}) == result
                         assert request(19001, '/mock/stats')['calls'][scenario + ':' + event['event_id']] == count
+                if scenario == 'ok':
+                    invalid = dict(operation_id='invalid', camera_id='CAM_A_B', event_type='PASSAGE',
+                                   origin_sector='B', destination_sector='A', plate='ABC1D23', source='SIMULATION')
+                    try:
+                        request(19002, '/api/v1/vision/events/simulate', invalid)
+                    except urllib.error.HTTPError as error:
+                        assert error.code == 422
+                    else:
+                        raise AssertionError('Invalid route was accepted')
+                    manual = dict(operation_id='no-plate', camera_id='CAM_ENTRADA', event_type='ENTRY', source='ASSISTED')
+                    event = request(19002, '/api/v1/vision/events/simulate', manual)['event']
+                    assert event['plate'] is None and event['session_id'] is None
+                    assert request(19002, '/api/v1/vision/events/simulate', manual)['event'] == event
+                    assert request(19002, f"/api/v1/vision/events/{event['event_id']}/send", {})['delivery'] == 'HTTP_ACKNOWLEDGED'
+                    # A new physical passage remains possible after the original retry.
+                    later = dict(operation_id='later-passage', camera_id='CAM_A_B', event_type='PASSAGE',
+                                 origin_sector='A', destination_sector='B', plate='ABC1D23', source='SIMULATION')
+                    later_event = request(19002, '/api/v1/vision/events/simulate', later)['event']
+                    assert request(19002, f"/api/v1/vision/events/{later_event['event_id']}/send", {})['delivery'] == 'HTTP_ACKNOWLEDGED'
+                    assert request(19002, '/api/v1/vision/events')['total'] == 5
+                    assert request(19001, '/mock/stats')['unique_events'] == 5
+                    print('No-plate ENTRY, invalid route 422, deduplication and later PASSAGE verified', flush=True)
                 print(scenario, 'ENTRY/PASSAGE/EXIT verified; IDs preserved', flush=True)
             finally:
                 api.terminate()
