@@ -1,6 +1,7 @@
 # Parking Vision — PY-01 e PY-02
 
 Modelos e preparação local de eventos do PY-04: [EVENTS.md](EVENTS.md).
+Simulador assistido local, endpoints e roteiro do PY-06: [SIMULATOR.md](SIMULATOR.md).
 
 Serviço independente do Java. Implementa processamento local de MP4, configuração, CORS e
 `GET /health`, que retorna HTTP 200 com `{"status":"ok"}`. Saúde indica

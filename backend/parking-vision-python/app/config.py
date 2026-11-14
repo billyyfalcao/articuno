@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     )
     cors_origins: list[str] = ['http://localhost:5173', 'http://127.0.0.1:5173']
     video_root: Path = Path(__file__).resolve().parents[1] / 'videos'
+    camera_config: Path = Path(__file__).resolve().parents[1] / 'cameras.example.json'
 
     @field_validator('cors_origins')
     @classmethod
