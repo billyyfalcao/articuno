@@ -109,8 +109,11 @@ Demonstração automatizada real em dois processos:
 ```
 
 O script ocupa 19001/19002 temporariamente e encerra os processos que iniciou.
+Não lê o `.env` do operador; usa configuração explícita do mock e o mapa de exemplo
+somente nos processos filhos. Não altera configurações ou arquivos do operador.
 Testa ENTRY/PASSAGE/EXIT nos sete cenários, número de tentativas, preservação
-do ID/payload e cache local de sucesso. Não usa servidor Spring Boot.
+do ID/payload e cache local de sucesso, além de entrada sem placa, transição
+inválida e passagem posterior legítima. Não usa servidor Spring Boot.
 
 ## Pendências obrigatórias para Java real
 

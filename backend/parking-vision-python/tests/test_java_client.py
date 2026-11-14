@@ -120,3 +120,12 @@ def test_concurrent_acknowledged_event_sent_once():
         results = list(executor.map(lambda _: ledger.send(item), range(10)))
     assert all(r.state == 'HTTP_ACKNOWLEDGED' for r in results)
     assert len(calls) == 1
+
+
+@pytest.mark.parametrize('target', ['java_api_base_url', 'java_events_endpoint'])
+@pytest.mark.parametrize('control', ['\x00', '\x1b', '\x7f'])
+def test_invalid_transport_url_rejected_at_startup(target, control):
+    values = dict(java_api_base_url='http://localhost', java_events_endpoint='/events')
+    values[target] += control
+    with pytest.raises(ValueError):
+        DeliverySettings(_env_file=None, **values)

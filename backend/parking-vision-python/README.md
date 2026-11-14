@@ -1,4 +1,7 @@
-# Parking Vision — PY-01 e PY-02
+# Parking Vision — backend Python
+
+Instalação, roteiro de demonstração e matriz de validação PY-08:
+[BACKEND_RUNBOOK.md](BACKEND_RUNBOOK.md).
 
 Modelos e preparação local de eventos do PY-04: [EVENTS.md](EVENTS.md).
 Simulador assistido local, endpoints e roteiro do PY-06: [SIMULATOR.md](SIMULATOR.md).
@@ -19,7 +22,7 @@ Python 3.13 (validado com 3.13.7), acesso ao PyPI para instalação e porta
 cd backend/parking-vision-python
 python -m venv .venv
 .venv/Scripts/python.exe -m pip install -r requirements-dev.txt
-Copy-Item .env.example .env
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 .venv/Scripts/python.exe -m uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8000
 ```
 
@@ -32,7 +35,7 @@ Em outro terminal, consulte `Invoke-RestMethod http://127.0.0.1:8000/health`.
 cd backend/parking-vision-python
 python3.13 -m venv .venv
 .venv/bin/python -m pip install -r requirements-dev.txt
-cp .env.example .env
+test -f .env || cp .env.example .env
 .venv/bin/python -m uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8000
 ```
 
@@ -52,7 +55,8 @@ CORS é uma política do navegador, não autenticação.
 Variáveis do processo têm precedência sobre o `.env` localizado na pasta do
 serviço; depois vêm os padrões. Campos desconhecidos no `.env` são rejeitados.
 Configuração inválida impede a inicialização e mostra uma mensagem sanitizada,
-sem imprimir valores. Não coloque chaves Java neste serviço nesta etapa.
+sem imprimir valores. O segredo de transporte opcional fica somente no backend;
+veja [HTTP_CLIENT.md](HTTP_CLIENT.md), nunca no frontend ou nos logs.
 Nunca versione `.env`, `.venv`, vídeos privados ou credenciais.
 
 ## Testes
@@ -64,7 +68,7 @@ Linux: `.venv/bin/python -m pytest -q`
 Execute dentro da pasta do serviço. Cobertura: health, preflight CORS permitido
 e negado, configuração inválida sem exposição do valor, leitura de `.env` e
 precedência do ambiente. Para instalação sem ferramentas de teste, use
-`requirements.txt`. Não há frontend nem integração Java nesta Issue.
+`requirements.txt`. Não há frontend nem integração comprovada com Java real.
 
 ## Vídeos locais (PY-02)
 

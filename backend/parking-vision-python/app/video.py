@@ -86,9 +86,14 @@ class VideoProcessor:
         except Exception:
             state, error = 'error', 'Nao foi possivel ler o video; verifique integridade, codec e permissoes.'
         finally:
+            release_failed = False
             if capture is not None:
-                capture.release()
+                try:
+                    capture.release()
+                except Exception:
+                    release_failed = True
+                    state, error = 'error', 'Falha ao liberar a captura de video; reinicie o servico.'
             with self.lock:
-                if self.stop_event.is_set():
+                if self.stop_event.is_set() and not release_failed:
                     state, error = 'stopped', None
                 self.data.update(state=state, error=error)
