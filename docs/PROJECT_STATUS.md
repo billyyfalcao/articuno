@@ -12,8 +12,9 @@ Conferido no GitHub em **14/11/2026**, durante a entrega do JV-03. Prazo da equi
   merge em 14/11 às 08:46:23 de Brasília. Issue #20 ainda OPEN / In review no
   Project na consulta; esse estado administrativo foi preservado.
 - Branch atual: `feat/JV-03-sessoes-setores`, baseada nesse develop. Sessões,
-  setores e consultas implementados/testados; publicação do PR ainda pendente
-  neste snapshot. JV-03 em In progress. EXIT autorizado segue bloqueado pelo JV-06.
+  setores e consultas implementados/testados; [PR #28](https://github.com/billyyfalcao/articuno/pull/28)
+  OPEN para develop, sem auto-merge. JV-03 em In review. EXIT autorizado segue
+  bloqueado pelo JV-06; Issue #21 permanece aberta, sem marcar Done.
 - O resumo anterior, publicado pelo [PR #18](https://github.com/billyyfalcao/articuno/pull/18),
   dizia que Java estava ausente e que este documento era apenas local. Essas
   informações estão desatualizadas e foram corrigidas aqui.
@@ -42,7 +43,7 @@ sessões e ocupação estimada. Não comprova pagamento, ticket ou cancela autor
 ## 2. Issues e Project
 
 Estados consultados no GitHub. Done/Issue fechada não comprova automaticamente
-dependências externas. Apenas JV-03 foi movido para In progress nesta execução;
+dependências externas. Apenas JV-03 foi movido para In progress e In review;
 demais cards preservados, inclusive JV-02 ainda em In review após o merge.
 
 | Issue | Estado GitHub / Project | Situação |
@@ -58,7 +59,7 @@ demais cards preservados, inclusive JV-02 ainda em In review após o merge.
 | [#9 PY-09](https://github.com/billyyfalcao/articuno/issues/9) | OPEN / Backlog | P1 opcional, não iniciado |
 | [#19 JV-01](https://github.com/billyyfalcao/articuno/issues/19) | CLOSED / Done | PR #26 integrado: Java 21, Spring Boot, SQLite, health |
 | [#20 JV-02](https://github.com/billyyfalcao/articuno/issues/20) | OPEN / In review | PR #27 integrado; estado administrativo ainda não atualizado pela equipe |
-| [#21 JV-03](https://github.com/billyyfalcao/articuno/issues/21) | OPEN / In progress | Sessões/setores/estimativas testados nesta branch; EXIT autorizado bloqueado por JV-06 |
+| [#21 JV-03](https://github.com/billyyfalcao/articuno/issues/21) | OPEN / In review | PR #28 aberto; sessões/setores/estimativas testados; EXIT autorizado bloqueado por JV-06 |
 | [#22 JV-04](https://github.com/billyyfalcao/articuno/issues/22) | OPEN / Backlog | Ciclo de negócio completo Python ↔ Java pendente |
 | [#23 JV-05](https://github.com/billyyfalcao/articuno/issues/23) | OPEN / Backlog | Ticket/token/QR e consulta do motorista pendentes |
 | [#24 JV-06](https://github.com/billyyfalcao/articuno/issues/24) | OPEN / Backlog | Pagamento demonstrativo e autorização de saída pendentes |
@@ -80,6 +81,7 @@ seguem as autorizações específicas da equipe, sem movimentar outros cards.
 | origin/docs/PY-08-project-status | 8799b26 | PR #18 integrado |
 | origin/feat/JV-01-estrutura-springboot | c80ab6d | PR #26 integrado |
 | origin/feat/JV-02-eventos-idempotencia | dbdb821 | PR #27 integrado |
+| origin/feat/JV-03-sessoes-setores | Consultar head do PR #28 | Branch publicada, em revisão |
 | origin/feat/PY-03-ocr-placas | 89ed134 | PR #13 OPEN, base develop; nenhuma alteração nesta execução |
 | origin/feat/PY-08-testes-estabilizacao | f68fd69 | PR #17 integrado |
 | origin/feat/PY-01-estrutura-fastapi | 8a992f9 | PR #10 integrado |
