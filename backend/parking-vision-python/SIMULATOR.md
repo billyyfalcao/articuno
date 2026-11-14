@@ -5,6 +5,11 @@ não gera ticket, não altera ocupação e não autoriza saída. Use uma instân
 Uvicorn com um worker, ligada a 127.0.0.1 conforme o README. Não exponha os
 controles sem autenticação em rede pública; CORS não é autenticação.
 
+Com PY-05, criar o evento continua local; existe envio HTTP **explícito** em
+`POST /api/v1/vision/events/{event_id}/send`. Configuração, resultados e mock
+estão em [HTTP_CLIENT.md](HTTP_CLIENT.md). Os exemplos NOT_SENT/UNAVAILABLE
+abaixo descrevem o modo padrão sem transporte configurado.
+
 Abra `http://127.0.0.1:8000/docs` para executar as operações via Try it out.
 Não é necessário frontend React. Consulte `GET /api/v1/vision/cameras` antes
 de selecionar a câmera: a resposta identifica modo LOCAL_SIMULATOR, mapa e

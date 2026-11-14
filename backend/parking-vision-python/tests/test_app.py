@@ -30,7 +30,7 @@ def test_invalid_config_is_redacted(monkeypatch, value):
     monkeypatch.setenv('CORS_ORIGINS', value)
     with pytest.raises(RuntimeError) as error:
         load_settings()
-    assert str(error.value) == 'Invalid configuration: check CORS_ORIGINS in environment or .env.'
+    assert str(error.value) == 'Invalid configuration: check environment or .env (CORS_ORIGINS and delivery settings).'
     assert value not in str(error.value)
 
 
