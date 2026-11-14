@@ -1,20 +1,24 @@
 # Articuno — estado do projeto e retomada
 
-Conferido no GitHub em **14/11/2026**, durante a entrega do JV-03. Prazo da equipe:
+Conferido no GitHub em **14/11/2026**, durante a integração final do MVP. Prazo da equipe:
 **14/11/2026 às 12h**. Consultar novamente o remoto antes de continuar.
 
 - Repositório: [billyyfalcao/articuno](https://github.com/billyyfalcao/articuno).
 - Project: [billyyfalcao #6](https://github.com/users/billyyfalcao/projects/6).
-- Base: `origin/develop` em `e99c3b177bec7b5b96bf1e089a936973eac7ecba`.
+- Base: `origin/develop` em `f925e8761cea040a71c1951e3ac48c43cfdcd82c`.
 - **JV-01 já integrado:** [PR #26](https://github.com/billyyfalcao/articuno/pull/26),
   merge em 14/11 às 04:16:05 de Brasília. Não repetir a estrutura Java.
 - **JV-02 integrado:** [PR #27](https://github.com/billyyfalcao/articuno/pull/27),
   merge em 14/11 às 08:46:23 de Brasília. Issue #20 ainda OPEN / In review no
   Project na consulta; esse estado administrativo foi preservado.
-- Branch atual: `feat/JV-03-sessoes-setores`, baseada nesse develop. Sessões,
-  setores e consultas implementados/testados; [PR #28](https://github.com/billyyfalcao/articuno/pull/28)
-  OPEN para develop, sem auto-merge. JV-03 em In review. EXIT autorizado segue
+- **JV-03 integrado:** [PR #28](https://github.com/billyyfalcao/articuno/pull/28),
+  merge em 14/11 às 09:08:40 de Brasília. JV-03 permanece administrativamente em In review. EXIT autorizado segue
   bloqueado pelo JV-06; Issue #21 permanece aberta, sem marcar Done.
+- Branch da entrega: `feat/MVP-integracao-final`, criada da develop acima. Frontend
+  React/Vite reutiliza seletivamente o protótipo fornecido; três serviços reais,
+  launcher Windows e gateway autenticado. Consulte [README_DEMO.md](../README_DEMO.md)
+  e [MVP_VALIDATION.md](MVP_VALIDATION.md) para comandos, testes e limites atuais.
+  Nenhuma alteração funcional Python/Java ou merge automático nesta execução.
 - O resumo anterior, publicado pelo [PR #18](https://github.com/billyyfalcao/articuno/pull/18),
   dizia que Java estava ausente e que este documento era apenas local. Essas
   informações estão desatualizadas e foram corrigidas aqui.
@@ -22,18 +26,19 @@ Conferido no GitHub em **14/11/2026**, durante a entrega do JV-03. Prazo da equi
 ## 1. Arquitetura e interfaces
 
 Vídeo/câmera lógica → Python/FastAPI → REST interno Java/Spring Boot → SQLite.
-Um único React compartilhado deverá consumir os dois backends.
+Um único React compartilhado consome os dois backends através do gateway autenticado.
 
 | Componente | Responsabilidade e estado |
 |---|---|
 | Python | MP4, frames, câmeras lógicas, eventos, simulador assistido e cliente HTTP integrados; OCR continua separado no PR #13 |
-| Java | Estrutura/SQLite/health e receptor JV-02 integrados; sessões/setores/ocupação estimada implementados nesta branch JV-03; tickets, pagamentos e saída autorizada pendentes |
-| React | Painel administrativo, portal do motorista e totem; fontes completas ainda não publicadas |
+| Java | JV-01/02/03 integrados: SQLite, sessões/setores/ocupação estimada; tickets, pagamentos e saída autorizada pendentes |
+| React | Frontend definitivo nesta branch: painel, câmeras e totem integrados; portal do motorista continua pendente |
 
 Interfaces acordadas: **/admin**, portal do motorista e **/totem/entrada**.
 O planejamento usa /motorista/:token, mas o bundle do colega usa **/ticket/:token**:
-preservar essa rota e a autenticação administrativa. Totem e monitoramento
-funcionais não foram comprovados. Não criar outro React.
+preservar essa rota ao recuperar o portal. Fontes do colega continuam ausentes;
+nenhuma autenticação anterior foi removida. O novo gateway protege as três
+telas com credenciais próprias, sem fornecer a chave interna ao navegador.
 
 Python não acessa o banco Java nem implementa regras de sessões/pagamento.
 O mock HTTP permanece como ferramenta de teste. O JV-02 agora tem contrato
@@ -43,8 +48,8 @@ sessões e ocupação estimada. Não comprova pagamento, ticket ou cancela autor
 ## 2. Issues e Project
 
 Estados consultados no GitHub. Done/Issue fechada não comprova automaticamente
-dependências externas. Apenas JV-03 foi movido para In progress e In review;
-demais cards preservados, inclusive JV-02 ainda em In review após o merge.
+dependências externas. Cards preservados nesta execução; não marcar critérios
+pendentes como concluídos. JV-02/JV-03 ainda estão em In review após os merges.
 
 | Issue | Estado GitHub / Project | Situação |
 |---|---|---|
@@ -54,19 +59,19 @@ demais cards preservados, inclusive JV-02 ainda em In review após o merge.
 | [#4 PY-04](https://github.com/billyyfalcao/articuno/issues/4) | CLOSED / Done | Integrado, PR #14: eventos, câmeras, deduplicação local |
 | [#5 PY-05](https://github.com/billyyfalcao/articuno/issues/5) | CLOSED / Done | Integrado, PR #16: cliente HTTP; transporte ao receptor real validado no JV-02, efeitos de negócio pendentes |
 | [#6 PY-06](https://github.com/billyyfalcao/articuno/issues/6) | CLOSED / Done | Integrado, PR #15: simulador e histórico local |
-| [#7 PY-07](https://github.com/billyyfalcao/articuno/issues/7) | OPEN / Backlog | Bloqueado pelas fontes React; sem PR |
+| [#7 PY-07](https://github.com/billyyfalcao/articuno/issues/7) | OPEN / Backlog | Frontend integrado na branch final a partir do protótipo autorizado; revisão pendente |
 | [#8 PY-08](https://github.com/billyyfalcao/articuno/issues/8) | OPEN / Backlog | PR #17 integrado; aceite ponta a ponta com OCR/Java/React permanece parcial |
 | [#9 PY-09](https://github.com/billyyfalcao/articuno/issues/9) | OPEN / Backlog | P1 opcional, não iniciado |
 | [#19 JV-01](https://github.com/billyyfalcao/articuno/issues/19) | CLOSED / Done | PR #26 integrado: Java 21, Spring Boot, SQLite, health |
 | [#20 JV-02](https://github.com/billyyfalcao/articuno/issues/20) | OPEN / In review | PR #27 integrado; estado administrativo ainda não atualizado pela equipe |
-| [#21 JV-03](https://github.com/billyyfalcao/articuno/issues/21) | OPEN / In review | PR #28 aberto; sessões/setores/estimativas testados; EXIT autorizado bloqueado por JV-06 |
-| [#22 JV-04](https://github.com/billyyfalcao/articuno/issues/22) | OPEN / Backlog | Ciclo de negócio completo Python ↔ Java pendente |
+| [#21 JV-03](https://github.com/billyyfalcao/articuno/issues/21) | OPEN / In review | PR #28 integrado; sessões/setores/estimativas testados; EXIT autorizado bloqueado por JV-06 |
+| [#22 JV-04](https://github.com/billyyfalcao/articuno/issues/22) | OPEN / Backlog | ENTRY/PASSAGE, reenvio e recuperação reais comprovados; saída autorizada ainda pendente |
 | [#23 JV-05](https://github.com/billyyfalcao/articuno/issues/23) | OPEN / Backlog | Ticket/token/QR e consulta do motorista pendentes |
 | [#24 JV-06](https://github.com/billyyfalcao/articuno/issues/24) | OPEN / Backlog | Pagamento demonstrativo e autorização de saída pendentes |
 | [#25 JV-07](https://github.com/billyyfalcao/articuno/issues/25) | OPEN / Backlog | Consolidação final; testes incrementais executados nos cards |
 
 Project: Backlog, Ready, In progress, In review e Done. Não existe status
-Blocked; PY-07 está tecnicamente bloqueado em Backlog. Novas mudanças de status
+Blocked. Backlog do PY-07 ainda não reflete a implementação desta branch. Novas mudanças de status
 seguem as autorizações específicas da equipe, sem movimentar outros cards.
 
 ## 3. Branches e PRs
@@ -75,13 +80,13 @@ seguem as autorizações específicas da equipe, sem movimentar outros cards.
 
 | Branch remota | Commit | Observação |
 |---|---|---|
-| origin/develop | e99c3b1 | Integra PY-01/02/04/05/06, trabalho independente PY-08, documento #18 e JV-01/JV-02 |
+| origin/develop | f925e87 | Integra PY-01/02/04/05/06, PY-08 independente, documento #18 e JV-01/02/03 |
 | origin/main | 0b7c053 | Merge anterior preservado conforme pedido da equipe |
 | origin/development | 8230038 | Build/dependências React, sem fontes recuperáveis; não é base de integração |
 | origin/docs/PY-08-project-status | 8799b26 | PR #18 integrado |
 | origin/feat/JV-01-estrutura-springboot | c80ab6d | PR #26 integrado |
 | origin/feat/JV-02-eventos-idempotencia | dbdb821 | PR #27 integrado |
-| origin/feat/JV-03-sessoes-setores | Consultar head do PR #28 | Branch publicada, em revisão |
+| origin/feat/JV-03-sessoes-setores | Consultar head do PR #28 | PR #28 integrado |
 | origin/feat/PY-03-ocr-placas | 89ed134 | PR #13 OPEN, base develop; nenhuma alteração nesta execução |
 | origin/feat/PY-08-testes-estabilizacao | f68fd69 | PR #17 integrado |
 | origin/feat/PY-01-estrutura-fastapi | 8a992f9 | PR #10 integrado |
@@ -120,7 +125,7 @@ Histórico Python é em memória, limitado a 1.000 operações. Usar um worker e
 loopback. LOCAL_VALIDATED é validação local; HTTP_ACKNOWLEDGED é transporte 2xx.
 Timeout/5xx podem deixar UNCERTAIN; não gerar outro ID para contornar incerteza.
 
-Java integrado: GET /health e receptor JV-02. **Nesta branch JV-03:**
+Java integrado na develop: GET /health e rotas JV-02/JV-03:
 
 | Método / rota | Função |
 |---|---|
@@ -197,7 +202,9 @@ Evidências anteriores do PY-08 permanecem em
 FastAPI → mock em dois processos, erros 401/403/422/500/timeout, fluxo assistido,
 deduplicação e vídeo com 1.800 frames/60 amostras e health responsivo.
 Esses ensaios anteriores não foram repetidos integralmente no JV-02.
-Linux/instalação limpa, build React, pagamento e cancela continuam não validados.
+Linux/instalação limpa, pagamento e cancela continuam não validados.
+Build React e navegador com serviços reais foram validados na entrega final;
+resultados atuais em [MVP_VALIDATION.md](MVP_VALIDATION.md).
 Sessões passaram a ser comprovadas no JV-03, conforme evidências acima.
 
 ## 6. OCR e vídeo — PR #13 preservado
@@ -223,28 +230,30 @@ origin/development (8230038) mantém 13 arquivos em dist e 6.179 em node_modules
 faltam src, package.json e configurações do aplicativo recuperáveis.
 O build do colega sugere rotas administrativas e /ticket/:token, com telas
 “Em construção”; não comprova funcionamento real nem consumo de APIs.
-Não houve npm build/smoke ou integração React ↔ FastAPI.
+Na autorização final, a equipe forneceu `prototipo_referencia/articuno_mvp_3_telas/`
+(sem o sublinhado inicial citado na solicitação). O frontend React/Vite em
+`frontend/` reaproveita CSS/componentes visuais e usa adaptadores reais. Não
+importa vendors UMD, dist/node_modules, nem altera a branch development.
+Painel, câmeras e totem foram testados no Edge, desktop e largura de celular.
 
-Menor risco: colega publicar fontes, manifesto/lockfile, configs e assets;
-reutilizar seletivamente em branch PY-07, preservar autenticação/rotas,
-sem importar dist/node_modules ou criar segundo React.
-
-Java **já existe**; sessões e setores estão implementados nesta branch JV-03.
-Regras de autorização de saída ainda não: EXIT é rejeitado e não encerra sessão.
-Link público é apenas planejamento no README Java: nenhum deploy/túnel criado,
-nem autorização para implementar infraestrutura nesta etapa.
+Java já existe e foi integrado. EXIT é rejeitado e não encerra sessão.
+Túnel Cloudflare temporário autorizado e configurado somente para o gateway
+autenticado; teste HTTPS desta máquina executado. A confirmação em outro
+dispositivo é independente e deve ser conferida no relatório de validação.
+Não assumir que a URL temporária ou os processos estarão vivos numa nova sessão.
 
 ## 8. Prioridades até as 12h e retomada
 
-1. Revisar JV-03 e autorizar merge; saída positiva está explicitamente bloqueada.
-   Aguardar equipe; não fazer merge automático nem marcar Issue21 como Done.
-2. JV-04 a partir de develop atualizado: consolidar configuração e roteiro real
-   usando as evidências JV-03. Ciclo completo ainda depende de autorização de saída.
-3. JV-05/JV-06: ticket/token/QR e pagamento demonstrativo/saída, com regras
-   confirmadas no documento da equipe. Consolidar testes JV-07/PY-08.
-4. Retomar PY-07 quando fontes chegarem. Manter fallback assistido; não depender
-   de OCR nem iniciar PY-09. Demonstração local vem antes da publicação.
-5. Antes da apresentação, registrar exatamente quais cenários funcionam.
+1. Revisar o PR da integração final; executar o roteiro do README_DEMO com os
+   três serviços. Nenhum merge automático.
+2. Confirmar HTTPS no dispositivo dos avaliadores; usar URL local caso haja
+   bloqueio externo. Acesso exige credenciais privadas de `.demo/access.json`.
+3. Apresentar ENTRY/PASSAGE, sessão, ocupação estimada e reenvio; MP4 é separado
+   da operação assistida e não comprova OCR.
+4. Não iniciar funcionalidades extras antes da apresentação. JV-05/JV-06,
+   portal/tickets/pagamentos/saída autorizada e OCR seguem pendentes.
+5. Atualizar estados do Project apenas conforme autorização da equipe; o
+   presente documento não converte critérios não executados em Done.
 
 Para outra sessão: ler este arquivo, contrato e README/guia JV-03 Java, além de
 EVENTS.md, SIMULATOR.md, HTTP_CLIENT.md e BACKEND_RUNBOOK.md do Python.
@@ -252,8 +261,9 @@ Conferir git status/branch/log e git fetch origin, PRs/Issues/Project.
 Nesta máquina gh pode exigir caminho completo:
 `C:/Program Files/GitHub CLI/gh.exe`.
 
-Instruções Windows para os serviços estão nos READMEs; Java seleciona JDK 21
-por terminal, Python usa venv e Uvicorn. React permanece bloqueado.
+Instruções Windows para os três serviços estão em README_DEMO.md; o launcher
+seleciona JDK 21 explicitamente e Python usa venv/Uvicorn. React já está integrado
+nesta branch. Não repetir a recuperação do frontend.
 Preservar PDF original em docs/, PR #13, development e alterações alheias.
 Não commitar .env, .venv, bancos, vídeos ou segredos; não forçar push, não
 commitar em main/develop e não iniciar outro card sem autorização.
