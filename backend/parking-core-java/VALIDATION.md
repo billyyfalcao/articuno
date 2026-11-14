@@ -3,6 +3,10 @@
 Executado em 14/11/2026, Windows, Microsoft OpenJDK 21.0.7, Maven 3.9.11 via
 Wrapper 3.3.4. Base da branch: origin/develop `13a059c`. Issue #19.
 
+Publicado na branch `feat/JV-01-estrutura-springboot`,
+[PR #26 para develop](https://github.com/billyyfalcao/articuno/pull/26).
+JV-01 em In review; sem merge automático. Próximo card: JV-02/#20 após merge.
+
 ## Build e testes
 
 Na pasta do serviço, JAVA_HOME apontando para JDK 21:
