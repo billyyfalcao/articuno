@@ -29,6 +29,7 @@ class CoreApplicationTest {
         args.add("--CORE_PORT=0");
         args.add("--CORE_BIND_ADDRESS=127.0.0.1");
         args.add("--INTERNAL_API_KEY=");
+        args.add("--CORE_LAYOUT_PATH=" + Path.of("parking.example.json").toAbsolutePath());
         args.add("--server.port=0");
         args.add("--spring.main.banner-mode=off");
         args.add("--logging.level.root=OFF");
@@ -67,13 +68,13 @@ class CoreApplicationTest {
             assertThat(jdbc.queryForObject("SELECT value FROM persistence_test", String.class))
                     .isEqualTo("persisted-marker");
             assertThat(jdbc.queryForObject(
-                    "SELECT value FROM app_metadata WHERE key='schema_version'", String.class)).isEqualTo("2");
+                    "SELECT value FROM app_metadata WHERE key='schema_version'", String.class)).isEqualTo("3");
             assertThat(jdbc.queryForObject("PRAGMA foreign_keys", Integer.class)).isEqualTo(1);
         }
         // Independent connection proves this is an ordinary persistent SQLite file.
         try (var connection = DriverManager.getConnection("jdbc:sqlite:" + directory.resolve("core.db"));
              var statement = connection.createStatement();
-             var result = statement.executeQuery("SELECT COUNT(*) FROM app_metadata")) {
+             var result = statement.executeQuery("SELECT COUNT(*) FROM app_metadata WHERE key='schema_version'")) {
             assertThat(result.getInt(1)).isEqualTo(1);
         }
     }
