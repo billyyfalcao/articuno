@@ -1,8 +1,10 @@
-# Articuno Parking Core — JV-01
+# Articuno Parking Core — JV-01 / JV-02
 
-Estrutura Java independente do OCR e do frontend. Implementa **somente
-`GET /health`**, configuração e persistência SQLite. Ainda não recebe eventos
-Python, não cria sessões/tickets e não calcula pagamentos ou ocupação.
+Estrutura Java independente do OCR e do frontend. Implementa `GET /health`,
+configuração, SQLite e receptor autenticado de eventos com idempotência.
+Não cria sessões/tickets e não calcula pagamentos ou ocupação.
+**JV-02:** execução, demonstração e limites em [JV02_RECEIVER.md](JV02_RECEIVER.md);
+contrato em [API_CONTRACT.md](../../docs/API_CONTRACT.md).
 
 Base: `origin/develop` em `13a059c`, após PR #18. Issue [JV-01/#19](https://github.com/billyyfalcao/articuno/issues/19).
 Python, React, documento original e PR #13 foram preservados.
@@ -20,9 +22,9 @@ Python, React, documento original e PR #13 foram preservados.
 - SQLite foi viável: nenhum desvio para H2. Não há ORM, broker ou serviço de
   banco externo. Caminho do arquivo é configurável; conexões habilitam chaves
   estrangeiras e busy timeout de 5 segundos.
-- O esquema inicial tem apenas `app_metadata` com `schema_version=1`.
-  Inicialização repetida preserva dados; versão de esquema incompatível
-  impede startup. Migrações de tabelas de negócio ficam nos próximos cards.
+- JV-01 iniciou app_metadata/schema_version=1. JV-02 migra atomicamente para
+  versão 2 com vision_events, preservando dados anteriores. Inicialização
+  repetida preserva dados; versão incompatível impede startup.
 
 ## Windows / PowerShell
 
@@ -67,14 +69,15 @@ java -jar target/parking-core-java-0.1.0-SNAPSHOT.jar
 | CORE_PORT | 8080 | Inteiro 0..65535; 0 solicita porta livre, útil nos testes |
 | CORE_BIND_ADDRESS | 127.0.0.1 | IPv4 numérico; padrão restrito à máquina local |
 | CORE_DB_PATH | ./data/articuno.db | Arquivo SQLite local, relativo ao diretório de execução ou absoluto; sem URI, query, fragmento ou caracteres de controle |
+| INTERNAL_API_KEY | Ausente | Sem chave, eventos ficam desabilitados; com chave, 32..256 caracteres ASCII sem espaços |
 
 Os nomes CORE_* são a configuração deste serviço, incluindo porta e bind;
 não configure SERVER_PORT como alternativa. Não há URLs de serviços externos
 no código JV-01. Os endereços localhost deste README são exemplos locais.
 
 `.env.example` é referência: **Spring Boot não carrega `.env` automaticamente**.
-Exporte variáveis no shell; não sobrescreva `.env` existente. Não existe chave
-interna necessária neste card: autenticação de eventos pertence ao JV-02.
+Exporte variáveis no shell; não sobrescreva `.env` existente. A chave interna
+é necessária para as rotas de eventos JV-02, mas não para /health.
 `data/`, bancos, `.env`, `.tools/`, `.cache/`, logs e `target/` são ignorados.
 
 `GET /health` retorna HTTP 200 e `{"status":"ok"}` após consultar o banco.
@@ -86,8 +89,8 @@ identifica a configuração a conferir. Não habilite logs DEBUG de infraestrutu
 para demonstração com dados privados.
 
 Health não comprova integração Python, OCR, sessões ou autorização de saída.
-Não há autenticação de operador ou CORS liberado no Java nesta etapa; o único
-endpoint é a saúde e o bind padrão é loopback. Não exponha pela internet apenas
+Não há autenticação de operador ou CORS liberado no Java nesta etapa; rotas
+internas usam chave de serviço e o bind padrão é loopback. Não exponha pela internet apenas
 mudando o bind: os controles planejados abaixo ainda precisam ser implementados.
 
 ## Testes
@@ -101,14 +104,14 @@ independente ao mesmo arquivo, chaves estrangeiras habilitadas, porta/bind/
 caminho inválidos, caminho inacessível, versão de esquema incompatível,
 banco corrompido após startup (503 sanitizado), 404 e 405.
 
-Resultados e limitações desta execução estão em [VALIDATION.md](VALIDATION.md).
-Não confundir esta prova com o JV-04: ainda não existe endpoint interno que o
-cliente HTTP Python possa utilizar.
+Evidências históricas JV-01: [VALIDATION.md](VALIDATION.md). Execução e testes
+JV-02: [JV02_RECEIVER.md](JV02_RECEIVER.md). O receptor já aceita o cliente
+Python; o ciclo de negócio do JV-04 ainda depende de sessões e saída autorizada.
 
 ## Próximos cards e execução conjunta no Windows
 
-Após revisão/merge do JV-01, iniciar JV-02 a partir de develop atualizada.
-Documentar contrato em `docs/API_CONTRACT.md` usando o modelo Python real:
+JV-01 já integrado; JV-02 documenta o contrato em `docs/API_CONTRACT.md`
+usando o modelo Python real:
 event_id UUID, ENTRY/PASSAGE/EXIT, fontes OCR/ASSISTED/**SIMULATION**, timestamps
 com fuso, confiança nula no manual e suporte a entrada sem placa.
 JV-03 implementará sessões/ocupação; JV-04 comprovará comunicação real.
@@ -121,8 +124,8 @@ Para preparar a demonstração local, abrir terminais separados:
 2. **Python:** na raiz, `cd backend/parking-vision-python` e
    `.venv/Scripts/python.exe -m uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8000`.
    Usar os passos de instalação do README Python. A porta é argumento do Uvicorn.
-   Deixar JAVA_API_BASE_URL/JAVA_EVENTS_ENDPOINT sem configuração nesta etapa:
-   definir ambos apenas quando JV-02 documentar a rota real. A chave interna
+   Configurar JAVA_API_BASE_URL/JAVA_EVENTS_ENDPOINT conforme contrato JV-02
+   e a mesma INTERNAL_API_KEY no Java e Python. A chave interna
    ficará somente nos backends. Retry requer idempotência comprovada.
 3. **React:** bloqueado até o colega publicar `src`, manifesto/lockfile e
    configurações. Então seguir os scripts reais do projeto único, configurar

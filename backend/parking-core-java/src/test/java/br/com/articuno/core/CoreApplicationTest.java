@@ -28,6 +28,7 @@ class CoreApplicationTest {
         args.add("--CORE_DB_PATH=" + directory.resolve("core.db"));
         args.add("--CORE_PORT=0");
         args.add("--CORE_BIND_ADDRESS=127.0.0.1");
+        args.add("--INTERNAL_API_KEY=");
         args.add("--server.port=0");
         args.add("--spring.main.banner-mode=off");
         args.add("--logging.level.root=OFF");
@@ -66,7 +67,7 @@ class CoreApplicationTest {
             assertThat(jdbc.queryForObject("SELECT value FROM persistence_test", String.class))
                     .isEqualTo("persisted-marker");
             assertThat(jdbc.queryForObject(
-                    "SELECT value FROM app_metadata WHERE key='schema_version'", String.class)).isEqualTo("1");
+                    "SELECT value FROM app_metadata WHERE key='schema_version'", String.class)).isEqualTo("2");
             assertThat(jdbc.queryForObject("PRAGMA foreign_keys", Integer.class)).isEqualTo(1);
         }
         // Independent connection proves this is an ordinary persistent SQLite file.
