@@ -2,7 +2,8 @@
 
 Ambiente executado: Windows, Microsoft JDK 21.0.7, Node 24.17.0/npm 11.13.0,
 Python do ambiente virtual existente e Edge real controlado por Playwright.
-Base conferida após `git fetch origin`: `origin/develop` em `f925e876`, merge
+Entrega: [PR #29](https://github.com/billyyfalcao/articuno/pull/29), para develop,
+sem merge automático. Base conferida após `git fetch origin`: `origin/develop` em `f925e876`, merge
 do PR #28 (JV-03). Branch: `feat/MVP-integracao-final`. PR #13 de OCR preservado.
 
 ## Resultado dos comandos
@@ -65,7 +66,8 @@ URL criada: **https://inquiries-factory-near-tuition.trycloudflare.com**.
 É efêmera, depende desta máquina ligada e exige credenciais privadas locais;
 não é URL de produção ou de acesso anônimo.
 
-Teste em 14/11 às 10:40 de Brasília, via Edge desta máquina, passando pela URL pública:
+Teste em 14/11 às 10:40, repetido às 10:45 de Brasília após o build final,
+via Edge desta máquina, passando pela URL pública:
 
 - Sem autenticação: painel e setores retornaram401.
 - Com autenticação: telas e setores reais retornaram200; dois setores lidos.

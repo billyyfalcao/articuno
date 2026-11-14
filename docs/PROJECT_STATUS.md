@@ -19,6 +19,8 @@ Conferido no GitHub em **14/11/2026**, durante a integração final do MVP. Praz
   launcher Windows e gateway autenticado. Consulte [README_DEMO.md](../README_DEMO.md)
   e [MVP_VALIDATION.md](MVP_VALIDATION.md) para comandos, testes e limites atuais.
   Nenhuma alteração funcional Python/Java ou merge automático nesta execução.
+- Integração final publicada no [PR #29](https://github.com/billyyfalcao/articuno/pull/29),
+  destino develop; revisão/merge ficam com a equipe.
 - O resumo anterior, publicado pelo [PR #18](https://github.com/billyyfalcao/articuno/pull/18),
   dizia que Java estava ausente e que este documento era apenas local. Essas
   informações estão desatualizadas e foram corrigidas aqui.
@@ -57,7 +59,7 @@ pendentes como concluídos. JV-02/JV-03 ainda estão em In review após os merge
 | [#2 PY-02](https://github.com/billyyfalcao/articuno/issues/2) | CLOSED / Done | Integrado, PR #12: MP4, amostragem e processamento em background |
 | [#3 PY-03](https://github.com/billyyfalcao/articuno/issues/3) | OPEN / In progress | PR #13 aberto; leitura real completa não validada; não integrar |
 | [#4 PY-04](https://github.com/billyyfalcao/articuno/issues/4) | CLOSED / Done | Integrado, PR #14: eventos, câmeras, deduplicação local |
-| [#5 PY-05](https://github.com/billyyfalcao/articuno/issues/5) | CLOSED / Done | Integrado, PR #16: cliente HTTP; transporte ao receptor real validado no JV-02, efeitos de negócio pendentes |
+| [#5 PY-05](https://github.com/billyyfalcao/articuno/issues/5) | CLOSED / Done | Integrado, PR #16: cliente HTTP; sessões e passagens reais comprovadas em JV-03/MVP; ticket pendente |
 | [#6 PY-06](https://github.com/billyyfalcao/articuno/issues/6) | CLOSED / Done | Integrado, PR #15: simulador e histórico local |
 | [#7 PY-07](https://github.com/billyyfalcao/articuno/issues/7) | OPEN / Backlog | Frontend integrado na branch final a partir do protótipo autorizado; revisão pendente |
 | [#8 PY-08](https://github.com/billyyfalcao/articuno/issues/8) | OPEN / Backlog | PR #17 integrado; aceite ponta a ponta com OCR/Java/React permanece parcial |
