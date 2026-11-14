@@ -154,6 +154,10 @@ evidência e confirmar fora deste módulo. Envio assistido pertence ao PY-06.
 
 ### Resultados: vídeo estrangeiro
 
+Investigação posterior de resolução, ROI, amostragem, filtros e configuração:
+[OCR_DIAGNOSTIC.md](OCR_DIAGNOSTIC.md). Houve melhoria parcial de caracteres,
+mas ainda nenhum reconhecimento completo correto comprovado de placa real.
+
 Arquivo local fornecido: `License_Plate_Detection_Test_1080p.mp4`, não
 `estacionamento.mp4`. OpenCV leu 1.800 frames a 30 fps. Ensaio via API com a
 ROI acima e intervalo 300 terminou em `completed`, seis frames amostrados,
