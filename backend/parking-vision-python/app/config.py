@@ -2,10 +2,11 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from pydantic import ValidationError, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict, SettingsError
+from pydantic_settings import SettingsConfigDict, SettingsError
+from app.java_client import DeliverySettings
 
 
-class Settings(BaseSettings):
+class Settings(DeliverySettings):
     model_config = SettingsConfigDict(
         env_file=Path(__file__).resolve().parents[1] / '.env',
         env_file_encoding='utf-8',
@@ -42,5 +43,5 @@ def load_settings() -> Settings:
         return Settings()
     except (ValidationError, SettingsError):
         raise RuntimeError(
-            'Invalid configuration: check CORS_ORIGINS in environment or .env.'
+            'Invalid configuration: check environment or .env (CORS_ORIGINS and delivery settings).'
         ) from None

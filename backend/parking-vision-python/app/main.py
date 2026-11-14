@@ -31,7 +31,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         await asyncio.to_thread(processor.close)
 
     app = FastAPI(title='Parking Vision', version='0.1.0', lifespan=lifespan)
-    app.include_router(simulator_router(camera_map))
+    app.include_router(simulator_router(camera_map, settings))
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
