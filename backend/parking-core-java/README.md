@@ -1,12 +1,12 @@
-# Articuno Parking Core — JV-01 / JV-02
+# Articuno Parking Core — JV-01 / JV-02 / JV-03
 
 Estrutura Java independente do OCR e do frontend. Implementa `GET /health`,
-configuração, SQLite e receptor autenticado de eventos com idempotência.
-Não cria sessões/tickets e não calcula pagamentos ou ocupação.
-**JV-02:** execução, demonstração e limites em [JV02_RECEIVER.md](JV02_RECEIVER.md);
+configuração, SQLite, receptor idempotente, sessões e ocupação estimada por setor.
+EXIT fica bloqueado até autorização do JV-06; tickets/pagamentos permanecem pendentes.
+**JV-03:** execução, demonstração e limites em [JV03_SESSIONS.md](JV03_SESSIONS.md);
 contrato em [API_CONTRACT.md](../../docs/API_CONTRACT.md).
 
-Base: `origin/develop` em `13a059c`, após PR #18. Issue [JV-01/#19](https://github.com/billyyfalcao/articuno/issues/19).
+Base JV-03: `origin/develop` em `e99c3b1`, após PR #27. Issue [JV-03/#21](https://github.com/billyyfalcao/articuno/issues/21).
 Python, React, documento original e PR #13 foram preservados.
 
 ## Requisitos e decisões
@@ -22,9 +22,9 @@ Python, React, documento original e PR #13 foram preservados.
 - SQLite foi viável: nenhum desvio para H2. Não há ORM, broker ou serviço de
   banco externo. Caminho do arquivo é configurável; conexões habilitam chaves
   estrangeiras e busy timeout de 5 segundos.
-- JV-01 iniciou app_metadata/schema_version=1. JV-02 migra atomicamente para
-  versão 2 com vision_events, preservando dados anteriores. Inicialização
-  repetida preserva dados; versão incompatível impede startup.
+- JV-03 migra schema 1/2 para 3, com setores/sessões e recibos persistidos.
+  Eventos antigos são preservados sem criar sessões retroativas. Fazer backup
+  antes de atualizar; não usar binários antigos com banco migrado.
 
 ## Windows / PowerShell
 
@@ -69,6 +69,7 @@ java -jar target/parking-core-java-0.1.0-SNAPSHOT.jar
 | CORE_PORT | 8080 | Inteiro 0..65535; 0 solicita porta livre, útil nos testes |
 | CORE_BIND_ADDRESS | 127.0.0.1 | IPv4 numérico; padrão restrito à máquina local |
 | CORE_DB_PATH | ./data/articuno.db | Arquivo SQLite local, relativo ao diretório de execução ou absoluto; sem URI, query, fragmento ou caracteres de controle |
+| CORE_LAYOUT_PATH | ./parking.example.json | JSON local de setores/capacidades e câmeras/transições; até 64 KiB; ver guia JV-03 |
 | INTERNAL_API_KEY | Ausente | Sem chave, eventos ficam desabilitados; com chave, 32..256 caracteres ASCII sem espaços |
 
 Os nomes CORE_* são a configuração deste serviço, incluindo porta e bind;
@@ -77,7 +78,7 @@ no código JV-01. Os endereços localhost deste README são exemplos locais.
 
 `.env.example` é referência: **Spring Boot não carrega `.env` automaticamente**.
 Exporte variáveis no shell; não sobrescreva `.env` existente. A chave interna
-é necessária para as rotas de eventos JV-02, mas não para /health.
+é necessária para eventos e consultas internas, mas não para /health.
 `data/`, bancos, `.env`, `.tools/`, `.cache/`, logs e `target/` são ignorados.
 
 `GET /health` retorna HTTP 200 e `{"status":"ok"}` após consultar o banco.
@@ -105,8 +106,9 @@ caminho inválidos, caminho inacessível, versão de esquema incompatível,
 banco corrompido após startup (503 sanitizado), 404 e 405.
 
 Evidências históricas JV-01: [VALIDATION.md](VALIDATION.md). Execução e testes
-JV-02: [JV02_RECEIVER.md](JV02_RECEIVER.md). O receptor já aceita o cliente
-Python; o ciclo de negócio do JV-04 ainda depende de sessões e saída autorizada.
+JV-02: [JV02_RECEIVER.md](JV02_RECEIVER.md). Sessões e FastAPI → Java reais:
+[JV03_SESSIONS.md](JV03_SESSIONS.md). O ciclo completo do JV-04 ainda depende
+da saída autorizada; a demo atual comprova o bloqueio de saída.
 
 ## Próximos cards e execução conjunta no Windows
 
@@ -114,7 +116,8 @@ JV-01 já integrado; JV-02 documenta o contrato em `docs/API_CONTRACT.md`
 usando o modelo Python real:
 event_id UUID, ENTRY/PASSAGE/EXIT, fontes OCR/ASSISTED/**SIMULATION**, timestamps
 com fuso, confiança nula no manual e suporte a entrada sem placa.
-JV-03 implementará sessões/ocupação; JV-04 comprovará comunicação real.
+JV-03 implementa sessões/ocupação e testa FastAPI → Java reais; JV-04
+consolidará o roteiro integrado, ainda pendente do ciclo de saída autorizado.
 A saída positiva depende de uma regra explícita de autorização; não liberar
 EXIT artificialmente para antecipar a demo antes do JV-06.
 

@@ -55,6 +55,7 @@ class VisionEventsTest {
             context = new SpringApplicationBuilder(CoreApplication.class).run(
                     "--CORE_DB_PATH=" + database, "--CORE_PORT=0", "--server.port=0",
                     "--CORE_BIND_ADDRESS=127.0.0.1", "--INTERNAL_API_KEY=" + key,
+                    "--CORE_LAYOUT_PATH=" + Path.of("parking.example.json").toAbsolutePath(),
                     "--logging.level.root=OFF", "--spring.main.banner-mode=off");
             client = HttpClient.newHttpClient();
             origin = "http://127.0.0.1:" + ((ServletWebServerApplicationContext) context).getWebServer().getPort();
@@ -84,12 +85,13 @@ class VisionEventsTest {
         try (var server = start(KEY)) {
             for (JsonNode fixture : fixtures) {
                 var response = server.post(fixture.toString(), KEY);
-                assertThat(response.statusCode()).isEqualTo(200);
+                boolean exit = fixture.path("event_type").asText().equals("EXIT");
+                assertThat(response.statusCode()).isEqualTo(exit ? 403 : 200);
                 JsonNode receipt = JSON.readTree(response.body());
                 assertThat(receipt.path("event_id").asText()).isEqualTo(fixture.path("event_id").asText());
-                assertThat(receipt.path("status").asText()).isEqualTo("RECORDED");
+                assertThat(receipt.path("status").asText()).isEqualTo(exit ? "REJECTED" : "APPLIED");
                 assertThat(receipt.path("received_at").asText()).endsWith("Z");
-                assertThat(receipt.has("session_id")).isFalse();
+                assertThat(receipt.has("session_id")).isEqualTo(!exit);
                 var stored = server.get(ROUTE + "/" + fixture.path("event_id").asText(), KEY);
                 assertThat(stored.statusCode()).isEqualTo(200);
                 assertThat(JSON.readTree(stored.body()).path("event").path("event_type")).isEqualTo(fixture.path("event_type"));
@@ -104,9 +106,11 @@ class VisionEventsTest {
         try (var server = start(KEY)) {
             var input = event().put("source", "ASSISTED");
             input.putNull("plate");
-            assertThat(server.post(input.toString(), KEY).statusCode()).isEqualTo(200);
-            input.put("event_id", UUID.randomUUID().toString()).put("camera_id", "CAM_SAIDA")
-                    .put("event_type", "EXIT").put("session_id", "known-session");
+            var created = server.post(input.toString(), KEY);
+            assertThat(created.statusCode()).isEqualTo(200);
+            String id = JSON.readTree(created.body()).path("session_id").asText();
+            input.put("event_id", UUID.randomUUID().toString()).put("camera_id", "CAM_A_B")
+                    .put("event_type", "PASSAGE").put("session_id", id).put("origin_sector", "A").put("destination_sector", "B");
             assertThat(server.post(input.toString(), KEY).statusCode()).isEqualTo(200);
             assertThat(server.count()).isEqualTo(2);
         }
@@ -247,7 +251,7 @@ class VisionEventsTest {
             var conflict = input.deepCopy().put("plate", "XYZ9876");
             assertThat(server.post(conflict.toString(), KEY).statusCode()).isEqualTo(409);
             assertThat(server.post(input.toString(), KEY).body()).isEqualTo(receipt);
-            input.put("event_id", UUID.randomUUID().toString());
+            input.put("event_id", UUID.randomUUID().toString()).put("plate", "XYZ9876");
             assertThat(server.post(input.toString(), KEY).statusCode()).isEqualTo(200);
             assertThat(server.count()).isEqualTo(2);
         }
@@ -280,6 +284,7 @@ class VisionEventsTest {
             assertThat(responses).allSatisfy(r -> assertThat(r.statusCode()).isEqualTo(200));
             assertThat(responses.stream().map(HttpResponse::body).distinct()).hasSize(1);
             assertThat(first.count()).isEqualTo(1);
+            assertThat(first.jdbc.queryForObject("SELECT COUNT(*) FROM parking_sessions", Integer.class)).isEqualTo(1);
         }
     }
 
@@ -292,7 +297,7 @@ class VisionEventsTest {
         }
         try (var server = start(KEY)) {
             assertThat(server.jdbc.queryForObject("SELECT value FROM app_metadata WHERE key='marker'", String.class)).isEqualTo("preserved");
-            assertThat(server.jdbc.queryForObject("SELECT value FROM app_metadata WHERE key='schema_version'", String.class)).isEqualTo("2");
+            assertThat(server.jdbc.queryForObject("SELECT value FROM app_metadata WHERE key='schema_version'", String.class)).isEqualTo("3");
             assertThat(server.post(event().toString(), KEY).statusCode()).isEqualTo(200);
         }
     }

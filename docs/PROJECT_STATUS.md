@@ -1,17 +1,20 @@
 # Articuno — estado do projeto e retomada
 
-Conferido no GitHub em **14/11/2026**, durante a entrega do JV-02. Prazo da equipe:
+Conferido no GitHub em **14/11/2026**, durante a entrega do JV-03. Prazo da equipe:
 **14/11/2026 às 12h**. Consultar novamente o remoto antes de continuar.
 
 - Repositório: [billyyfalcao/articuno](https://github.com/billyyfalcao/articuno).
 - Project: [billyyfalcao #6](https://github.com/users/billyyfalcao/projects/6).
-- Base: `origin/develop` em `885b354363a50ee710a5ce5aa97aeb1ce5dd911b`.
+- Base: `origin/develop` em `e99c3b177bec7b5b96bf1e089a936973eac7ecba`.
 - **JV-01 já integrado:** [PR #26](https://github.com/billyyfalcao/articuno/pull/26),
   merge em 14/11 às 04:16:05 de Brasília. Não repetir a estrutura Java.
-- Branch atual: `feat/JV-02-eventos-idempotencia`, baseada nesse develop.
-  Receptor JV-02 implementado, testado e publicado no
-  [PR #27](https://github.com/billyyfalcao/articuno/pull/27), OPEN para develop.
-  Card em In review; aguarda revisão/merge pela equipe, sem auto-merge.
+- **JV-02 integrado:** [PR #27](https://github.com/billyyfalcao/articuno/pull/27),
+  merge em 14/11 às 08:46:23 de Brasília. Issue #20 ainda OPEN / In review no
+  Project na consulta; esse estado administrativo foi preservado.
+- Branch atual: `feat/JV-03-sessoes-setores`, baseada nesse develop. Sessões,
+  setores e consultas implementados/testados; [PR #28](https://github.com/billyyfalcao/articuno/pull/28)
+  OPEN para develop, sem auto-merge. JV-03 em In review. EXIT autorizado segue
+  bloqueado pelo JV-06; Issue #21 permanece aberta, sem marcar Done.
 - O resumo anterior, publicado pelo [PR #18](https://github.com/billyyfalcao/articuno/pull/18),
   dizia que Java estava ausente e que este documento era apenas local. Essas
   informações estão desatualizadas e foram corrigidas aqui.
@@ -24,7 +27,7 @@ Um único React compartilhado deverá consumir os dois backends.
 | Componente | Responsabilidade e estado |
 |---|---|
 | Python | MP4, frames, câmeras lógicas, eventos, simulador assistido e cliente HTTP integrados; OCR continua separado no PR #13 |
-| Java | Fonte de verdade futura das sessões, setores, ocupação estimada, tickets e pagamentos; estrutura/SQLite/health integrados; receptor persistente JV-02 validado nesta branch |
+| Java | Estrutura/SQLite/health e receptor JV-02 integrados; sessões/setores/ocupação estimada implementados nesta branch JV-03; tickets, pagamentos e saída autorizada pendentes |
 | React | Painel administrativo, portal do motorista e totem; fontes completas ainda não publicadas |
 
 Interfaces acordadas: **/admin**, portal do motorista e **/totem/entrada**.
@@ -34,14 +37,14 @@ funcionais não foram comprovados. Não criar outro React.
 
 Python não acessa o banco Java nem implementa regras de sessões/pagamento.
 O mock HTTP permanece como ferramenta de teste. O JV-02 agora tem contrato
-implementado em [API_CONTRACT.md](API_CONTRACT.md), limitado ao **registro de
-eventos**; não comprova sessões, ocupação, pagamento ou cancela.
+implementado em [API_CONTRACT.md](API_CONTRACT.md), evoluído nesta branch para
+sessões e ocupação estimada. Não comprova pagamento, ticket ou cancela autorizada.
 
 ## 2. Issues e Project
 
 Estados consultados no GitHub. Done/Issue fechada não comprova automaticamente
-dependências externas. Apenas JV-02 foi movido para In progress e depois
-In review nesta execução; demais cards preservados.
+dependências externas. Apenas JV-03 foi movido para In progress e In review;
+demais cards preservados, inclusive JV-02 ainda em In review após o merge.
 
 | Issue | Estado GitHub / Project | Situação |
 |---|---|---|
@@ -55,8 +58,8 @@ In review nesta execução; demais cards preservados.
 | [#8 PY-08](https://github.com/billyyfalcao/articuno/issues/8) | OPEN / Backlog | PR #17 integrado; aceite ponta a ponta com OCR/Java/React permanece parcial |
 | [#9 PY-09](https://github.com/billyyfalcao/articuno/issues/9) | OPEN / Backlog | P1 opcional, não iniciado |
 | [#19 JV-01](https://github.com/billyyfalcao/articuno/issues/19) | CLOSED / Done | PR #26 integrado: Java 21, Spring Boot, SQLite, health |
-| [#20 JV-02](https://github.com/billyyfalcao/articuno/issues/20) | OPEN / In review | PR #27 aberto; receptor autenticado, persistência e idempotência testados |
-| [#21 JV-03](https://github.com/billyyfalcao/articuno/issues/21) | OPEN / Backlog | Sessões, setores, capacidade/ocupação estimada e transições de negócio pendentes |
+| [#20 JV-02](https://github.com/billyyfalcao/articuno/issues/20) | OPEN / In review | PR #27 integrado; estado administrativo ainda não atualizado pela equipe |
+| [#21 JV-03](https://github.com/billyyfalcao/articuno/issues/21) | OPEN / In review | PR #28 aberto; sessões/setores/estimativas testados; EXIT autorizado bloqueado por JV-06 |
 | [#22 JV-04](https://github.com/billyyfalcao/articuno/issues/22) | OPEN / Backlog | Ciclo de negócio completo Python ↔ Java pendente |
 | [#23 JV-05](https://github.com/billyyfalcao/articuno/issues/23) | OPEN / Backlog | Ticket/token/QR e consulta do motorista pendentes |
 | [#24 JV-06](https://github.com/billyyfalcao/articuno/issues/24) | OPEN / Backlog | Pagamento demonstrativo e autorização de saída pendentes |
@@ -72,12 +75,13 @@ seguem as autorizações específicas da equipe, sem movimentar outros cards.
 
 | Branch remota | Commit | Observação |
 |---|---|---|
-| origin/develop | 885b354 | Integra PY-01/02/04/05/06, trabalho independente PY-08, documento #18 e JV-01 #26 |
+| origin/develop | e99c3b1 | Integra PY-01/02/04/05/06, trabalho independente PY-08, documento #18 e JV-01/JV-02 |
 | origin/main | 0b7c053 | Merge anterior preservado conforme pedido da equipe |
 | origin/development | 8230038 | Build/dependências React, sem fontes recuperáveis; não é base de integração |
 | origin/docs/PY-08-project-status | 8799b26 | PR #18 integrado |
 | origin/feat/JV-01-estrutura-springboot | c80ab6d | PR #26 integrado |
-| origin/feat/JV-02-eventos-idempotencia | Consultar head do PR #27 | Branch publicada; receptor e documentação em revisão |
+| origin/feat/JV-02-eventos-idempotencia | dbdb821 | PR #27 integrado |
+| origin/feat/JV-03-sessoes-setores | Consultar head do PR #28 | Branch publicada, em revisão |
 | origin/feat/PY-03-ocr-placas | 89ed134 | PR #13 OPEN, base develop; nenhuma alteração nesta execução |
 | origin/feat/PY-08-testes-estabilizacao | f68fd69 | PR #17 integrado |
 | origin/feat/PY-01-estrutura-fastapi | 8a992f9 | PR #10 integrado |
@@ -86,7 +90,7 @@ seguem as autorizações específicas da equipe, sem movimentar outros cards.
 | origin/feat/PY-05-cliente-java | 00ed519 | PR #16 integrado |
 | origin/feat/PY-06-simulador-cameras | 31c82b0 | PR #15 integrado |
 
-O checkout estava limpo antes da criação da branch JV-02. As branches locais
+O checkout estava limpo antes da criação da branch JV-03. As branches locais
 develop (c953fee) e main (e3a08d5) continuam preservadas e atrasadas. Trabalhos
 novos devem partir de origin/develop atualizado; nenhum merge automático.
 
@@ -116,26 +120,57 @@ Histórico Python é em memória, limitado a 1.000 operações. Usar um worker e
 loopback. LOCAL_VALIDATED é validação local; HTTP_ACKNOWLEDGED é transporte 2xx.
 Timeout/5xx podem deixar UNCERTAIN; não gerar outro ID para contornar incerteza.
 
-Java integrado JV-01: GET /health. **Nesta branch JV-02:**
+Java integrado: GET /health e receptor JV-02. **Nesta branch JV-03:**
 
 | Método / rota | Função |
 |---|---|
-| POST /api/v1/internal/vision-events | Valida e persiste evento/recibo no SQLite; 200 RECORDED |
-| GET /api/v1/internal/vision-events/{event_id} | Consulta evento e recibo persistidos |
+| POST /api/v1/internal/vision-events | Aplica ENTRY/PASSAGE e persiste evento/recibo/sessão; saída negada |
+| GET /api/v1/internal/vision-events/{event_id} | Consulta evento, recibo persistido e http_status original |
+| GET /api/v1/internal/sessions | Lista paginada (limit 1..100, offset >= 0) |
+| GET /api/v1/internal/sessions/{session_id} | Sessão persistida e setor estimado |
+| GET /api/v1/internal/sectors | Capacidades e ocupação/disponibilidade estimadas |
+| GET /api/v1/internal/dashboard | Indicadores reais e exit_policy BLOCKED_PENDING_JV06 |
 
 As rotas internas exigem X-Internal-API-Key; chave ausente no servidor desabilita
 o receptor com 503, sem derrubar health. Replay idêntico retorna recibo original;
-mesmo ID com outro conteúdo retorna 409. A PK do SQLite controla concorrência.
-Schema 1→2 migra em transação; fazer backup antes da atualização e não executar
-binário JV-01 sobre schema 2. Registros JV-02 não representam sessões nem serão
-automaticamente interpretados como efeitos de negócio retroativos.
+mesmo ID com outro conteúdo retorna 409. A PK e a transação IMMEDIATE do SQLite
+controlam concorrência e capacidade. Schema 1/2→3 migra em transação; fazer
+backup antes da atualização e não executar binários antigos sobre schema 3.
+Recibos legados JV-02 permanecem RECORDED, sem criar sessões retroativas.
+Novos recibos são APPLIED ou REJECTED; rejeições de negócio também preservam
+HTTP/resultado nos reenvios. Ocupação vem das sessões ativas, sem contador separado.
 
 Configurar URL base, endpoint e chave no Python conforme
 [contrato](API_CONTRACT.md). JAVA_IDEMPOTENCY_CONFIRMED=true é suportado por este
 receptor. A chave permanece nos servidores. O cliente Python atual descarta
 o corpo da resposta; consultar o GET interno para conferir o recibo.
 
-## 5. Evidências executadas no JV-02
+## 5. Evidências executadas no JV-03
+
+- Java clean verify: **71 testes**, zero falhas/erros/skips, BUILD SUCCESS e JAR.
+- Python pytest: **96 passed, 1 warning** preexistente; pip check sem conflitos.
+- **FastAPI e Spring Boot reais, em dois processos:** ENTRY criou sessão em A;
+  PASSAGE moveu a mesma sessão para B; estimativas consultadas pelas APIs Java.
+- Entrada ASSISTED sem placa recebeu session_id real; passagem por esse ID sem
+  inventar placa. Reenvios/duplicações conservaram sessões e recibos.
+- EXIT retornou Java403/Python FAILED e conservou sessão ACTIVE. Não houve
+  encerramento autorizado, pagamento, ticket ou abertura de cancela.
+- Transição impossível/conflito retornaram 409; autenticação ausente401;
+  destino lotado409 com ocupação preservada.
+- Java parado gerou UNCERTAIN/timeout após 3 tentativas no FastAPI. Reinício
+  preservou sessões/recibos e recuperou a entrada incerta usando o mesmo ID.
+- Testes Java com duas instâncias: última vaga e destino lotado não excederam
+  capacidade; falha SQL após mudar sessão reverteu também evento/recibo.
+
+Guia/limites e critérios individuais:
+[JV03_SESSIONS.md](../backend/parking-core-java/JV03_SESSIONS.md).
+Demo atual: tools/demo_vision_events.py dentro do serviço Java, executada com
+venv Python e JAVA_HOME=21. Usa dados ASSISTED e banco/layout/chave temporários;
+não altera fontes Python ou React. Revisão independente concluída sem achados
+críticos, importantes ou menores; smoke adicional com duas JVMs validou disputa
+pela última vaga e replay estável após mudança de contexto e reinício.
+
+### Histórico JV-02 (antes das regras de sessão)
 
 Ambiente Windows; JDK Microsoft **21.0.7** em C:/Users/USER/.jdks/ms-21.0.7.
 O Java do PATH continua **17**; Maven e JAR foram executados com JAVA_HOME=21.
@@ -153,9 +188,8 @@ pom.xml usa release 21. O JAR requer Java 21; não funciona no Java 17.
 
 Comandos, fixture real do modelo Python, evidências e limites:
 [JV02_RECEIVER.md](../backend/parking-core-java/JV02_RECEIVER.md).
-Demo reproduzível: tools/demo_vision_events.py dentro do serviço Java.
-O ensaio inicia o JAR e usa diretamente EventRegistry/JavaClient existentes;
-**não inicia servidor FastAPI nem React e não comprova o ciclo do JV-04**.
+Na versão JV-02, o ensaio iniciava o JAR e usava diretamente EventRegistry/JavaClient;
+não iniciava FastAPI/React. O script atual foi adaptado para a demo JV-03 acima.
 Nenhum arquivo funcional Python/React foi alterado.
 
 Evidências anteriores do PY-08 permanecem em
@@ -163,7 +197,8 @@ Evidências anteriores do PY-08 permanecem em
 FastAPI → mock em dois processos, erros 401/403/422/500/timeout, fluxo assistido,
 deduplicação e vídeo com 1.800 frames/60 amostras e health responsivo.
 Esses ensaios anteriores não foram repetidos integralmente no JV-02.
-Linux/instalação limpa, build React, sessões, pagamento e cancela não validados.
+Linux/instalação limpa, build React, pagamento e cancela continuam não validados.
+Sessões passaram a ser comprovadas no JV-03, conforme evidências acima.
 
 ## 6. OCR e vídeo — PR #13 preservado
 
@@ -194,25 +229,24 @@ Menor risco: colega publicar fontes, manifesto/lockfile, configs e assets;
 reutilizar seletivamente em branch PY-07, preservar autenticação/rotas,
 sem importar dist/node_modules ou criar segundo React.
 
-Java **já existe**, mas sessões, setores e regras de saída ainda não.
-Nenhum EXIT recebido pelo JV-02 autoriza cancela ou encerra sessão.
+Java **já existe**; sessões e setores estão implementados nesta branch JV-03.
+Regras de autorização de saída ainda não: EXIT é rejeitado e não encerra sessão.
 Link público é apenas planejamento no README Java: nenhum deploy/túnel criado,
 nem autorização para implementar infraestrutura nesta etapa.
 
 ## 8. Prioridades até as 12h e retomada
 
-1. Revisar/autorizar merge do JV-02. Aguardar equipe; não fazer merge automático.
-2. Após merge, JV-03 a partir de develop atualizado: sessões, setores e
-   ocupação estimada; definir comportamento da entrada sem placa e transições.
-3. JV-04: FastAPI → Java reais, consultar estado de negócio, duplicação e falhas.
-   Não anunciar saída autorizada enquanto as regras de saída estiverem pendentes.
-4. JV-05/JV-06: ticket/token/QR e pagamento demonstrativo/saída, com regras
+1. Revisar JV-03 e autorizar merge; saída positiva está explicitamente bloqueada.
+   Aguardar equipe; não fazer merge automático nem marcar Issue21 como Done.
+2. JV-04 a partir de develop atualizado: consolidar configuração e roteiro real
+   usando as evidências JV-03. Ciclo completo ainda depende de autorização de saída.
+3. JV-05/JV-06: ticket/token/QR e pagamento demonstrativo/saída, com regras
    confirmadas no documento da equipe. Consolidar testes JV-07/PY-08.
-5. Retomar PY-07 quando fontes chegarem. Manter fallback assistido; não depender
+4. Retomar PY-07 quando fontes chegarem. Manter fallback assistido; não depender
    de OCR nem iniciar PY-09. Demonstração local vem antes da publicação.
-6. Antes da apresentação, registrar exatamente quais cenários funcionam.
+5. Antes da apresentação, registrar exatamente quais cenários funcionam.
 
-Para outra sessão: ler este arquivo, contrato e README/guia JV-02 Java, além de
+Para outra sessão: ler este arquivo, contrato e README/guia JV-03 Java, além de
 EVENTS.md, SIMULATOR.md, HTTP_CLIENT.md e BACKEND_RUNBOOK.md do Python.
 Conferir git status/branch/log e git fetch origin, PRs/Issues/Project.
 Nesta máquina gh pode exigir caminho completo:

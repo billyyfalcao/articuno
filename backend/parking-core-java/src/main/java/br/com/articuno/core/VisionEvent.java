@@ -108,7 +108,7 @@ record VisionEvent(UUID eventId, String cameraId, EventType eventType, String pl
         return value.textValue();
     }
 
-    private static String identifier(JsonNode input, String field, boolean required) {
+    static String identifier(JsonNode input, String field, boolean required) {
         String value = text(input, field, required);
         if (value != null && (value.codePointCount(0, value.length()) > 128 || !IDENTIFIER.matcher(value).matches())) {
             throw EventFailure.invalid(field);

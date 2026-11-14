@@ -1,5 +1,10 @@
 # JV-02 — receptor autenticado e idempotência
 
+**Registro histórico do JV-02.** O código e a demo atuais evoluíram no JV-03:
+novos eventos aplicam regras de sessão; EXIT é rejeitado até JV-06. Recibos
+legados RECORDED são preservados. Usar [JV03_SESSIONS.md](JV03_SESSIONS.md)
+e o contrato atual para execução; resultados abaixo descrevem a versão JV-02.
+
 Base: develop em `885b354`, com JV-01 integrado pelo PR #26. Issue #20.
 Contrato implementado: [docs/API_CONTRACT.md](../../docs/API_CONTRACT.md).
 
