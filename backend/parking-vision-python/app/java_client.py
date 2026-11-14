@@ -30,6 +30,8 @@ class DeliverySettings(BaseSettings):
         if bool(self.java_api_base_url) != bool(self.java_events_endpoint):
             raise ValueError('Configure both base URL and endpoint, or neither')
         if self.java_api_base_url:
+            if any(ord(c) < 32 or ord(c) == 127 for c in self.java_api_base_url + self.java_events_endpoint):
+                raise ValueError('HTTP destination must not contain control characters')
             base = urlsplit(self.java_api_base_url)
             endpoint = urlsplit(self.java_events_endpoint)
             if (base.scheme not in ('http', 'https') or not base.hostname or base.username is not None

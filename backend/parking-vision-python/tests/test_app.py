@@ -5,11 +5,6 @@ from app.config import Settings, load_settings
 from app.main import create_app
 
 
-@pytest.fixture(autouse=True)
-def isolate_environment(monkeypatch):
-    monkeypatch.delenv('CORS_ORIGINS', raising=False)
-
-
 def test_health():
     with TestClient(create_app(Settings(_env_file=None))) as client:
         response = client.get('/health')

@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 
 from app.config import Settings
 from app.main import create_app
+from app.video import VideoProcessor
 
 
 def wait_done(client):
@@ -75,3 +76,17 @@ def test_stop_single_job_and_health(tmp_path, monkeypatch):
             resume.set()
         assert wait_done(client)['state'] == 'stopped'
         assert released.is_set()
+
+
+def test_release_failure_reaches_terminal_state(tmp_path, monkeypatch):
+    class Capture:
+        def __init__(self, *args): pass
+        def isOpened(self): return False
+        def release(self): raise RuntimeError('private decoder diagnostics')
+
+    monkeypatch.setattr('app.video.cv2.VideoCapture', Capture)
+    processor = VideoProcessor(tmp_path)
+    # Run directly so an uncaught worker exception fails this regression test.
+    processor._run(tmp_path / 'sample.mp4', 5)
+    assert processor.status()['state'] == 'error'
+    assert 'private decoder diagnostics' not in processor.status()['error']
