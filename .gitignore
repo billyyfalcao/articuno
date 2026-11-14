@@ -1,0 +1,12 @@
+.demo/
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+frontend/test-results/
+frontend/playwright-report/
+frontend/.tools/
+# Local reference supplied by the team; preserve it without importing vendors/builds.
+prototipo_referencia/
+_prototipo_referencia/

@@ -1,0 +1,15 @@
+{
+  "name": "articuno-monitoring",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env server.mjs --dev",
+    "build": "vite build",
+    "start": "node --env-file-if-exists=.env server.mjs",
+    "test": "node --test tests/gateway.test.mjs",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {"react":"19.3.1", "react-dom":"19.3.1"},
+  "devDependencies": {"vite":"8.3.8", "@vitejs/plugin-react":"6.3.0", "@playwright/test":"1.65.1"}
+}
