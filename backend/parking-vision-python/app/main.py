@@ -2,7 +2,8 @@ from typing import Literal
 from contextlib import asynccontextmanager
 import asyncio
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
+from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -16,7 +17,7 @@ class HealthResponse(BaseModel):
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings if settings is not None else load_settings()
-    processor = VideoProcessor(settings.video_root)
+    processor = VideoProcessor(settings.video_root, settings.tesseract_cmd)
 
     @asynccontextmanager
     async def lifespan(app):
@@ -47,5 +48,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.post('/api/v1/vision/analyze/stop')
     def stop():
         return processor.stop()
+
+    @app.get('/api/v1/vision/detections')
+    def detections(limit: int = Query(default=20, ge=1, le=50)):
+        return processor.results(limit)
+
+    @app.get('/api/v1/vision/detections/{detection_id}/frame')
+    def evidence(detection_id: str):
+        return Response(processor.image(detection_id), media_type='image/jpeg',
+                        headers={'Cache-Control': 'no-store'})
 
     return app

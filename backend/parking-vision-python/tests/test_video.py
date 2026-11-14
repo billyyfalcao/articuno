@@ -48,6 +48,40 @@ def test_invalid_sources(tmp_path):
         assert state['error']
 
 
+def test_ocr_evidence_and_failure(tmp_path, monkeypatch):
+    from app.ocr import classify
+    path = tmp_path / 'sample.mp4'
+    writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*'mp4v'), 10, (64, 48))
+    assert writer.isOpened()
+    writer.write(np.zeros((48, 64, 3), dtype=np.uint8))
+    writer.release()
+    monkeypatch.setattr('app.video.PlateReader.read', lambda *args: [dict(
+        **classify('GX15 OCJ', .7, .8), bounding_box=[1, 2, 3, 4])])
+    with TestClient(create_app(Settings(_env_file=None, video_root=tmp_path))) as client:
+        client.post('/api/v1/vision/analyze/start', json={'filename': 'sample.mp4', 'ocr': True})
+        assert wait_done(client)['state'] == 'completed'
+        reading = client.get('/api/v1/vision/detections').json()[0]
+        assert reading['raw_text'] == 'GX15 OCJ'
+        assert reading['frame_index'] == 0
+        assert reading['video_time_seconds'] == 0
+        assert reading['detected_at'].endswith('+00:00')
+        assert reading['rejection_reason'] == 'invalid_brazilian_format'
+        evidence = client.get(reading['evidence_url'])
+        assert evidence.headers['content-type'] == 'image/jpeg'
+        assert cv2.imdecode(np.frombuffer(evidence.content, np.uint8), cv2.IMREAD_COLOR).shape == (48, 64, 3)
+        assert client.get('/api/v1/vision/detections?limit=51').status_code == 422
+
+        def unavailable(*args):
+            raise RuntimeError('internal diagnostic not exposed')
+        monkeypatch.setattr('app.video.PlateReader.read', unavailable)
+        client.post('/api/v1/vision/analyze/start', json={'filename': 'sample.mp4', 'ocr': True})
+        state = wait_done(client)
+        assert state['state'] == 'completed'
+        assert state['ocr_error']
+        assert client.get('/api/v1/vision/detections').json() == []
+        assert client.get(reading['evidence_url']).status_code == 404
+
+
 def test_stop_single_job_and_health(tmp_path, monkeypatch):
     entered, resume, released = Event(), Event(), Event()
 
